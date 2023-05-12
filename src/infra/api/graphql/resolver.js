@@ -1,10 +1,8 @@
 const { UserInputError, ForbiddenError, ApolloError } = require('apollo-server-express')
 const { args2request } = require('@herbsjs/herbs2gql')
 
-function resolver(uc) {
-
-    return async function resolver(_parent, args, context, _info) {
-
+function resolver (uc) {
+    return async function resolver (_parent, args, context, _info) {
         const usecase = uc()
 
         /* Authorization */
@@ -25,17 +23,14 @@ function resolver(uc) {
 
         /* Response */
         if (response.isErr) {
-            if (response.isPermissionDeniedError)
-                throw new ForbiddenError(response.err.message, { cause: response.err })
+            if (response.isPermissionDeniedError) { throw new ForbiddenError(response.err.message, { cause: response.err }) }
 
             if (response.isInvalidArgumentsError ||
-                response.isInvalidEntityError)
-                throw new UserInputError(response.err.message, { cause: response.err })
+                response.isInvalidEntityError) { throw new UserInputError(response.err.message, { cause: response.err }) }
 
             if (response.isNotFoundError ||
                 response.isAlreadyExistsError ||
-                response.isUnknownError)
-                throw new ApolloError(response.err.message, response.err.code, { cause: response.err })
+                response.isUnknownError) { throw new ApolloError(response.err.message, response.err.code, { cause: response.err }) }
 
             throw new UserInputError(null, { cause: response.err })
         }

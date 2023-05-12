@@ -20,8 +20,7 @@ const controller = async ({ usecase, request, authorizationInfo, res, next }) =>
         if (response.isOk) {
             // OK
             res.status(200).json(response.ok)
-        }
-        else {
+        } else {
             // Err
             let status = 400
             if (response.isInvalidArgumentsError) status = 400
@@ -33,7 +32,6 @@ const controller = async ({ usecase, request, authorizationInfo, res, next }) =>
             res.status(status).json({ error: response.err })
         }
         res.end()
-
     } catch (error) {
         res.status(500).json({ error: error.name, message: error.message })
         next()
