@@ -21,22 +21,21 @@ const deleteBillingCycle = injection =>
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
-        'Check if the BillingCycle exist': step(async ctx => {
+        'Check if the Billing Cycle exist': step(async ctx => {
             const repo = new ctx.di.BillingCycleRepository(injection)
             const [billingCycle] = await repo.findByID(ctx.req.id)
             ctx.billingCycle = billingCycle
 
             if (billingCycle) return Ok()
             return Err.notFound({
-                message: `BillingCycle ID ${ctx.req.id} does not exist`,
+                message: `Billing Cycle ID ${ctx.req.id} does not exist`,
                 payload: { entity: 'Billing Cycle' }
             })
         }),
 
-        'Delete the BillingCycle': step(async ctx => {
+        'Delete the Billing Cycle': step(async ctx => {
             const repo = new ctx.di.BillingCycleRepository(injection)
             ctx.ret = await repo.delete(ctx.billingCycle)
-            // ctx.ret is the return value of a use case
             return Ok(ctx.ret)
         })
     })

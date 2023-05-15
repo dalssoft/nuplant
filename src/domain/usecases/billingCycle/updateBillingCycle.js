@@ -1,14 +1,14 @@
 const { usecase, step, Ok, Err, request } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
-const merge = require('deepmerge')
 const BillingCycle = require('../../entities/billingCycle')
 const BillingCycleRepository = require('../../../infra/data/repositories/billingCycleRepository')
+const CustomerSubscription = require('../../entities/customerSubscription')
 
 const dependency = { BillingCycleRepository }
 
 const updateBillingCycle = injection =>
     usecase('Update Billing Cycle', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: request.from(BillingCycle),
 
         // Output/Response metadata
@@ -37,10 +37,10 @@ const updateBillingCycle = injection =>
 
         'Check if it is a valid Billing Cycle before update': step(ctx => {
             const oldBillingCycle = ctx.billingCycle
-            const newBillingCycle = BillingCycle.fromJSON(merge.all([oldBillingCycle, ctx.req]))
+            const newBillingCycle = Object.assign(oldBillingCycle, BillingCycle.fromJSON(ctx.req))
             ctx.billingCycle = newBillingCycle
 
-            return newBillingCycle.isValid()
+            return newBillingCycle.isValid({ references: { onlyIDs: true } })
                 ? Ok()
                 : Err.invalidEntity({
                     message: 'BillingCycle is invalid',
@@ -51,14 +51,17 @@ const updateBillingCycle = injection =>
 
         'Update the BillingCycle': step(async ctx => {
             const repo = new ctx.di.BillingCycleRepository(injection)
-            // ctx.ret is the return value of a use case
-            return (ctx.ret = await repo.update(ctx.billingCycle))
+            const billingCycle = ctx.billingCycle
+            ctx.billingCycle.customerSubscriptionId = ctx.billingCycle.customerSubscription.id
+            const updated = await repo.update(billingCycle)
+            updated.customerSubscription = CustomerSubscription.fromJSON({ id: updated.customerSubscriptionId })
+            return (ctx.ret = updated)
         })
 
     })
 
 module.exports =
-  herbarium.usecases
-      .add(updateBillingCycle, 'UpdateBillingCycle')
-      .metadata({ group: 'BillingCycle', operation: herbarium.crud.update, entity: BillingCycle })
-      .usecase
+    herbarium.usecases
+        .add(updateBillingCycle, 'UpdateBillingCycle')
+        .metadata({ group: 'BillingCycle', operation: herbarium.crud.update, entity: BillingCycle })
+        .usecase

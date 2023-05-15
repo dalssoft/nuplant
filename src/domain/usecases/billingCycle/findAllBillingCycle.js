@@ -2,6 +2,7 @@ const { usecase, step, Ok } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 const BillingCycle = require('../../entities/billingCycle')
 const BillingCycleRepository = require('../../../infra/data/repositories/billingCycleRepository')
+const CustomerSubscription = require('../../entities/customerSubscription')
 
 const dependency = { BillingCycleRepository }
 
@@ -24,7 +25,7 @@ const findAllBillingCycle = injection =>
         'Find and return all the Billing Cycles': step(async ctx => {
             const repo = new ctx.di.BillingCycleRepository(injection)
             const billingCycles = await repo.findAll(ctx.req)
-            // ctx.ret is the return value of a use case
+            billingCycles.forEach(billingCycle => billingCycle.customerSubscription = CustomerSubscription.fromJSON({ id: billingCycle.customerSubscriptionId }))
             return Ok(ctx.ret = billingCycles)
         })
     })

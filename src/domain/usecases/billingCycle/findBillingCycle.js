@@ -2,12 +2,13 @@ const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 const BillingCycle = require('../../entities/billingCycle')
 const BillingCycleRepository = require('../../../infra/data/repositories/billingCycleRepository')
+const CustomerSubscription = require('../../entities/customerSubscription')
 
 const dependency = { BillingCycleRepository }
 
 const findBillingCycle = injection =>
     usecase('Find a Billing Cycle', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             id: String
         },
@@ -31,13 +32,13 @@ const findBillingCycle = injection =>
                     payload: { entity: 'Billing Cycle', id }
                 })
             }
-            // ctx.ret is the return value of a use case
+            billingCycle.customerSubscription = CustomerSubscription.fromJSON({ id: billingCycle.customerSubscriptionId })
             return Ok(ctx.ret = billingCycle)
         })
     })
 
 module.exports =
-  herbarium.usecases
-      .add(findBillingCycle, 'FindBillingCycle')
-      .metadata({ group: 'BillingCycle', operation: herbarium.crud.read, entity: BillingCycle })
-      .usecase
+    herbarium.usecases
+        .add(findBillingCycle, 'FindBillingCycle')
+        .metadata({ group: 'BillingCycle', operation: herbarium.crud.read, entity: BillingCycle })
+        .usecase

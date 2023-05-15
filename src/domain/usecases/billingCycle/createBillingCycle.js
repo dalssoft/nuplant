@@ -2,6 +2,7 @@ const { usecase, step, Ok, Err, request } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 const BillingCycle = require('../../entities/billingCycle')
 const BillingCycleRepository = require('../../../infra/data/repositories/billingCycleRepository')
+const CustomerSubscription = require('../../entities/customerSubscription')
 
 const dependency = { BillingCycleRepository }
 
@@ -22,25 +23,24 @@ const createBillingCycle = injection =>
         // Step description and function
         'Check if the Billing Cycle is valid': step(ctx => {
             ctx.billingCycle = BillingCycle.fromJSON(ctx.req)
-            ctx.billingCycle.id = Math.floor(Math.random() * 100000).toString()
 
-            if (!ctx.billingCycle.isValid()) {
+            if (!ctx.billingCycle.isValid({ exceptIDs: true, references: { onlyIDs: true } })) {
                 return Err.invalidEntity({
                     message: 'The Billing Cycle entity is invalid',
                     payload: { entity: 'Billing Cycle' },
                     cause: ctx.billingCycle.errors
                 })
             }
-
-            // returning Ok continues to the next step. Err stops the use case execution.
             return Ok()
         }),
 
         'Save the Billing Cycle': step(async ctx => {
             const repo = new ctx.di.BillingCycleRepository(injection)
             const billingCycle = ctx.billingCycle
-            // ctx.ret is the return value of a use case
-            return (ctx.ret = await repo.insert(billingCycle))
+            billingCycle.customerSubscriptionId = billingCycle.customerSubscription.id
+            const newBillingCycle = await repo.insert(billingCycle)
+            newBillingCycle.customerSubscription = CustomerSubscription.fromJSON({ id: billingCycle.customerSubscriptionId })
+            return (ctx.ret = newBillingCycle)
         })
     })
 

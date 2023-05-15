@@ -8,7 +8,8 @@ class BillingCycleRepository extends Repository {
         super({
             entity: BillingCycle,
             table: 'billing_cycles',
-            knex: connection
+            knex: connection,
+            foreignKeys: [{ customerSubscriptionId: String }],
         })
     }
 }
