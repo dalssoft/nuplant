@@ -5,7 +5,7 @@ const SubscriptionPlan = require('./subscriptionPlan')
 
 const CustomerSubscription =
     entity('Customer Subscription', {
-        id: id(String),
+        id: id(String, { validation: { presence: true } }),
         customer: field(Customer, { validation: { presence: true } }),
         subscriptionPlan: field(SubscriptionPlan, { validation: { presence: true } }),
         startDate: field(Date, { validation: { presence: true } }),

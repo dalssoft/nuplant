@@ -21,19 +21,19 @@ const deleteCustomerSubscription = injection =>
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
-        'Check if the CustomerSubscription exist': step(async ctx => {
+        'Check if the Customer Subscription exist': step(async ctx => {
             const repo = new ctx.di.CustomerSubscriptionRepository(injection)
             const [customerSubscription] = await repo.findByID(ctx.req.id)
             ctx.customerSubscription = customerSubscription
 
             if (customerSubscription) return Ok()
             return Err.notFound({
-                message: `CustomerSubscription ID ${ctx.req.id} does not exist`,
+                message: `Customer Subscription ID ${ctx.req.id} does not exist`,
                 payload: { entity: 'Customer Subscription' }
             })
         }),
 
-        'Delete the CustomerSubscription': step(async ctx => {
+        'Delete the Customer Subscription': step(async ctx => {
             const repo = new ctx.di.CustomerSubscriptionRepository(injection)
             ctx.ret = await repo.delete(ctx.customerSubscription)
             // ctx.ret is the return value of a use case

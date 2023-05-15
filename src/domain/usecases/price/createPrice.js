@@ -36,8 +36,10 @@ const createPrice = injection =>
         'Save the Price': step(async ctx => {
             const repo = new ctx.di.PriceRepository(injection)
             const price = ctx.price
-            ctx.price.productId = ctx.price.product.id
-            return (ctx.ret = await repo.insert(price))
+            price.productId = price.product.id
+            const newPrice = await repo.insert(price)
+            newPrice.product = price.product
+            return (ctx.ret = newPrice)
         })
     })
 

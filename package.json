@@ -5,7 +5,7 @@
     "main": "src/index.js",
     "scripts": {
         "start": "node --inspect src/index.js",
-        "start:dev": "nodemon --exec \"npm test && npm start\"",
+        "start:dev": "nodemon --exec \"npm start\"",
         "lint": "npx eslint \"**/*.{js,jsx}\" --quiet",
         "lint:fix": "npx eslint \"**/*.{js,jsx}\" --fix",
         "db:migrate": "npx knex --knexfile knexFile.js migrate:latest",

@@ -10,15 +10,15 @@ class PriceRepository extends Repository {
             table: 'prices',
             knex: connection,
             foreignKeys: [{ productId: String }],
-            fields: {
-                product: {
-                    map: { id: 'product_id' },
-                    // single entity fetcher
-                    // fetcher: (data) => productRepository.findByID(data.product_id),
-                    // multiple entities fetcher (multiple products per price)
-                    // fetcher: (data) => productRepository.find({ product_id: [data.product_id] }),
-                }
-            }
+            // fields: {
+            //     product: {
+            //         map: { id: 'product_id' },
+            //         // single entity fetcher
+            //         // fetcher: (data) => productRepository.findByID(data.product_id),
+            //         // multiple entities fetcher (multiple products per price)
+            //         // fetcher: (data) => productRepository.find({ product_id: [data.product_id] }),
+            //     }
+            // }
         })
     }
 }

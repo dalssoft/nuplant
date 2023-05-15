@@ -2,6 +2,8 @@ const { usecase, step, Ok, Err, request } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 const CustomerSubscription = require('../../entities/customerSubscription')
 const CustomerSubscriptionRepository = require('../../../infra/data/repositories/customerSubscriptionRepository')
+const Customer = require('../../entities/customer')
+const SubscriptionPlan = require('../../entities/subscriptionPlan')
 
 const dependency = { CustomerSubscriptionRepository }
 
@@ -19,12 +21,10 @@ const createCustomerSubscription = injection =>
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
-        // Step description and function
         'Check if the Customer Subscription is valid': step(ctx => {
             ctx.customerSubscription = CustomerSubscription.fromJSON(ctx.req)
-            ctx.customerSubscription.id = Math.floor(Math.random() * 100000).toString()
 
-            if (!ctx.customerSubscription.isValid()) {
+            if (!ctx.customerSubscription.isValid({ exceptIDs: true, references: { onlyIDs: true } })) {
                 return Err.invalidEntity({
                     message: 'The Customer Subscription entity is invalid',
                     payload: { entity: 'Customer Subscription' },
@@ -32,15 +32,20 @@ const createCustomerSubscription = injection =>
                 })
             }
 
-            // returning Ok continues to the next step. Err stops the use case execution.
             return Ok()
         }),
 
         'Save the Customer Subscription': step(async ctx => {
             const repo = new ctx.di.CustomerSubscriptionRepository(injection)
+            
             const customerSubscription = ctx.customerSubscription
-            // ctx.ret is the return value of a use case
-            return (ctx.ret = await repo.insert(customerSubscription))
+            customerSubscription.customerId = customerSubscription.customer.id
+            customerSubscription.subscriptionPlanId = customerSubscription.subscriptionPlan.id
+            
+            const newCustomerSubscription = await repo.insert(customerSubscription)
+            newCustomerSubscription.customer = Customer.fromJSON({ id: customerSubscription.customerId })
+            newCustomerSubscription.subscriptionPlan = SubscriptionPlan.fromJSON({ id: customerSubscription.subscriptionPlanId })
+            return (ctx.ret = newCustomerSubscription)
         })
     })
 

@@ -42,13 +42,13 @@ const updateSubscriptionPlan = injection =>
             return newSubscriptionPlan.isValid({ references: { onlyIDs: true } })
                 ? Ok()
                 : Err.invalidEntity({
-                    message: 'SubscriptionPlan is invalid',
+                    message: 'Subscription Plan is invalid',
                     payload: { entity: 'Subscription Plan' },
                     cause: newSubscriptionPlan.errors
                 })
         }),
 
-        'Update the SubscriptionPlan': step(async ctx => {
+        'Update the Subscription Plan': step(async ctx => {
             const repo = new ctx.di.SubscriptionPlanRepository(injection)
             await repo.deletePrices(ctx.subscriptionPlan)
             const saved = await repo.update(ctx.subscriptionPlan)

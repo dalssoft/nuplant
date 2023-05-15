@@ -3,6 +3,7 @@ const { herbarium } = require('@herbsjs/herbarium')
 const merge = require('deepmerge')
 const Price = require('../../entities/price')
 const PriceRepository = require('../../../infra/data/repositories/priceRepository')
+const Product = require('../../entities/product')
 
 const dependency = { PriceRepository }
 
@@ -53,7 +54,9 @@ const updatePrice = injection =>
             const repo = new ctx.di.PriceRepository(injection)
             const price = ctx.price
             ctx.price.productId = ctx.price.product.id
-            return (ctx.ret = await repo.update(price))
+            const updated = await repo.update(price)
+            updated.product = Product.fromJSON({ id: updated.productId })
+            return (ctx.ret = updated)
         })
 
     })

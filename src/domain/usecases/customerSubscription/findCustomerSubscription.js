@@ -2,6 +2,8 @@ const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 const CustomerSubscription = require('../../entities/customerSubscription')
 const CustomerSubscriptionRepository = require('../../../infra/data/repositories/customerSubscriptionRepository')
+const Customer = require('../../entities/customer')
+const SubscriptionPlan = require('../../entities/subscriptionPlan')
 
 const dependency = { CustomerSubscriptionRepository }
 
@@ -31,7 +33,8 @@ const findCustomerSubscription = injection =>
                     payload: { entity: 'Customer Subscription', id }
                 })
             }
-            // ctx.ret is the return value of a use case
+            customerSubscription.customer = Customer.fromJSON({ id: customerSubscription.customerId })
+            customerSubscription.subscriptionPlan = SubscriptionPlan.fromJSON({ id: customerSubscription.subscriptionPlanId })
             return Ok(ctx.ret = customerSubscription)
         })
     })

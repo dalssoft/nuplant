@@ -4,7 +4,7 @@ const Price = require('./price')
 
 const SubscriptionPlan =
     entity('Subscription Plan', {
-        id: id(String),
+        id: id(String, { validation: { presence: true } }),
         name: field(String, { validation: { presence: true } }),
         description: field(String, { validation: { presence: true } }),
         billingFrequency: field(String, {
