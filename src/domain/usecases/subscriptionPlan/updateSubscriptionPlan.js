@@ -55,7 +55,6 @@ const updateSubscriptionPlan = injection =>
             saved.prices = await repo.insertPrices(ctx.subscriptionPlan)
             return Ok(ctx.ret = saved)
         })
-
     })
 
 module.exports =

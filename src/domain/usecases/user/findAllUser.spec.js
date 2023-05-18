@@ -1,6 +1,6 @@
 const User = require('../../entities/user')
 const findAllUser = require('./findAllUser')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -14,9 +14,9 @@ const findAllUserSpec = spec({
             user: { hasAccess: true },
             injection: {
                 UserRepository: class UserRepository {
-                    async findAll (id) {
+                    async findAll ({ limit, offset }) {
                         const fakeUser = {
-                            id: 'a text',
+                            id: '1',
                             nickname: 'a text',
                             registrationNumber: 99,
                             password: 'a text'
@@ -42,7 +42,7 @@ const findAllUserSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(findAllUserSpec, 'FindAllUserSpec')
-      .metadata({ usecase: 'FindAllUser' })
-      .spec
+    herbarium.specs
+        .add(findAllUserSpec, 'FindAllUserSpec')
+        .metadata({ usecase: 'FindAllUser' })
+        .spec

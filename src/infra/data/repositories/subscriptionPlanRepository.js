@@ -5,15 +5,15 @@ const Price = require('../../../domain/entities/price')
 const connection = require('../database/connection')
 
 class SubscriptionPlanRepository extends Repository {
-    constructor(injection) {
+    constructor (injection) {
         super({
             entity: SubscriptionPlan,
             table: 'subscription_plans',
-            knex: connection,
+            knex: connection
         })
     }
 
-    async fetchPrices(subscriptionPlans) {
+    async fetchPrices (subscriptionPlans) {
         const subscriptionPlanIds = subscriptionPlans.map(subscriptionPlan => subscriptionPlan.id)
 
         const prices = await this.knex('subscription_plan_prices')
@@ -30,7 +30,7 @@ class SubscriptionPlanRepository extends Repository {
         return subscriptionPlans
     }
 
-    async insertPrices(subscriptionPlan) {
+    async insertPrices (subscriptionPlan) {
         const prices = subscriptionPlan.prices
         const subscriptionPlanId = subscriptionPlan.id
 
@@ -44,7 +44,7 @@ class SubscriptionPlanRepository extends Repository {
         return newPrices
     }
 
-    async deletePrices(subscriptionPlan) {
+    async deletePrices (subscriptionPlan) {
         const subscriptionPlanId = subscriptionPlan.id
 
         await this.knex('subscription_plan_prices').where({ subscription_plan_id: subscriptionPlanId }).del()

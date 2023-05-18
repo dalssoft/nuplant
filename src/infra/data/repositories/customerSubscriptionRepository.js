@@ -9,7 +9,7 @@ class CustomerSubscriptionRepository extends Repository {
             entity: CustomerSubscription,
             table: 'customer_subscriptions',
             knex: connection,
-            foreignKeys: [{ customerId: String, subscriptionPlanId: String }],
+            foreignKeys: [{ customerId: String, subscriptionPlanId: String }]
         })
     }
 }

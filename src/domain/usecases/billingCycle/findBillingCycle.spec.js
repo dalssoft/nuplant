@@ -1,6 +1,6 @@
 const BillingCycle = require('../../entities/billingCycle')
 const findBillingCycle = require('./findBillingCycle')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -8,22 +8,26 @@ const findBillingCycleSpec = spec({
 
     usecase: findBillingCycle,
 
-    'Find a billing Cycle when it exists': scenario({
-        'Given an existing billing Cycle': given({
+    'Find a Billing Cycle when it exists': scenario({
+        'Given an existing Billing Cycle': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findByID (id) {
                         const fakeBillingCycle = {
-                            id: 'a text',
-                            amountDue: 99,
-                            paymentStatus: 'a text',
-                            paymentProcessorTransactionID: 'a text'
+                            id,
+                            startDate: new Date('2020-01-01'),
+                            endDate: new Date('2020-01-02'),
+                            amountDue: 100,
+                            paymentStatus: 'pending',
+                            paymentProcessorTransactionID: 'x1',
+                            paymentDate: new Date('2020-01-01'),
+                            customerSubscriptionId: '1'
                         }
-                        return ([BillingCycle.fromJSON(fakeBillingCycle)])
+                        return ([BillingCycle.fromJSON(fakeBillingCycle, { allowExtraKeys: true })])
                     }
                 }
             }
@@ -36,15 +40,23 @@ const findBillingCycleSpec = spec({
         }),
 
         'Must return a valid billing Cycle': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
+            const billingCycle = ctx.response.ok
+            assert.equal(billingCycle.id, '1')
+            assert.deepEqual(billingCycle.startDate, new Date('2020-01-01'))
+            assert.deepEqual(billingCycle.endDate, new Date('2020-01-02'))
+            assert.equal(billingCycle.amountDue, 100)
+            assert.equal(billingCycle.paymentStatus, 'pending')
+            assert.equal(billingCycle.paymentProcessorTransactionID, 'x1')
+            assert.deepEqual(billingCycle.paymentDate, new Date('2020-01-01'))
+            assert.equal(billingCycle.customerSubscription.id, '1')
         })
 
     }),
 
-    'Do not find a billing Cycle when it does not exist': scenario({
-        'Given an empty billing Cycle repository': given({
+    'Do not find a Billing Cycle when it does not exist': scenario({
+        'Given an empty Billing Cycle repository': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
@@ -64,7 +76,7 @@ const findBillingCycleSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(findBillingCycleSpec, 'FindBillingCycleSpec')
-      .metadata({ usecase: 'FindBillingCycle' })
-      .spec
+    herbarium.specs
+        .add(findBillingCycleSpec, 'FindBillingCycleSpec')
+        .metadata({ usecase: 'FindBillingCycle' })
+        .spec

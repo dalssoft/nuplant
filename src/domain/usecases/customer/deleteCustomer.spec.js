@@ -1,6 +1,6 @@
 const Customer = require('../../entities/customer')
 const deleteCustomer = require('./deleteCustomer')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 

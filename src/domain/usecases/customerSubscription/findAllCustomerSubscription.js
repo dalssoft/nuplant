@@ -26,8 +26,8 @@ const findAllCustomerSubscription = injection =>
         'Find and return all the Customer Subscriptions': step(async ctx => {
             const repo = new ctx.di.CustomerSubscriptionRepository(injection)
             const customerSubscriptions = await repo.findAll(ctx.req)
-            customerSubscriptions.forEach(customerSubscription => customerSubscription.customer = Customer.fromJSON({ id: customerSubscription.customerId }))
-            customerSubscriptions.forEach(customerSubscription => customerSubscription.subscriptionPlan = SubscriptionPlan.fromJSON({ id: customerSubscription.subscriptionPlanId }))
+            customerSubscriptions.forEach(customerSubscription => (customerSubscription.customer = Customer.fromJSON({ id: customerSubscription.customerId })))
+            customerSubscriptions.forEach(customerSubscription => (customerSubscription.subscriptionPlan = SubscriptionPlan.fromJSON({ id: customerSubscription.subscriptionPlanId })))
             return Ok(ctx.ret = customerSubscriptions)
         })
     })

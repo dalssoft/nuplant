@@ -1,6 +1,6 @@
 const Product = require('../../entities/product')
 const findAllProduct = require('./findAllProduct')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -14,7 +14,7 @@ const findAllProductSpec = spec({
             user: { hasAccess: true },
             injection: {
                 ProductRepository: class ProductRepository {
-                    async findAll (id) {
+                    async findAll ({ limit, offset }) {
                         const fakeProduct = {
                             id: '1',
                             name: 'A product',
@@ -33,7 +33,11 @@ const findAllProductSpec = spec({
         }),
 
         'Must return a list of products': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.length, 1)
+            const products = ctx.response.ok
+            assert.strictEqual(products.length, 1)
+            assert.strictEqual(products[0].id, '1')
+            assert.strictEqual(products[0].name, 'A product')
+            assert.strictEqual(products[0].description, 'A product description')
         })
 
     })

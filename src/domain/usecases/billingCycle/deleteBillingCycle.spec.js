@@ -1,6 +1,6 @@
 const BillingCycle = require('../../entities/billingCycle')
 const deleteBillingCycle = require('./deleteBillingCycle')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -8,10 +8,10 @@ const deleteBillingCycleSpec = spec({
 
     usecase: deleteBillingCycle,
 
-    'Delete billing Cycle if exists': scenario({
-        'Given an existing billing Cycle': given({
+    'Delete Billing Cycle if exists': scenario({
+        'Given an existing Billing Cycle': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
@@ -37,7 +37,7 @@ const deleteBillingCycleSpec = spec({
     'Do not delete billing Cycle if it does not exist': scenario({
         'Given an empty billing Cycle repository': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
@@ -57,7 +57,7 @@ const deleteBillingCycleSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(deleteBillingCycleSpec, 'DeleteBillingCycleSpec')
-      .metadata({ usecase: 'DeleteBillingCycle' })
-      .spec
+    herbarium.specs
+        .add(deleteBillingCycleSpec, 'DeleteBillingCycleSpec')
+        .metadata({ usecase: 'DeleteBillingCycle' })
+        .spec

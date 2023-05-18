@@ -1,6 +1,6 @@
 const Customer = require('../../entities/customer')
 const findAllCustomer = require('./findAllCustomer')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -14,7 +14,7 @@ const findAllCustomerSpec = spec({
             user: { hasAccess: true },
             injection: {
                 CustomerRepository: class CustomerRepository {
-                    async findAll (id) {
+                    async findAll ({ limit, offset }) {
                         const fakeCustomer = {
                             id: '1',
                             name: 'Samantha',
@@ -42,7 +42,7 @@ const findAllCustomerSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(findAllCustomerSpec, 'FindAllCustomerSpec')
-      .metadata({ usecase: 'FindAllCustomer' })
-      .spec
+    herbarium.specs
+        .add(findAllCustomerSpec, 'FindAllCustomerSpec')
+        .metadata({ usecase: 'FindAllCustomer' })
+        .spec

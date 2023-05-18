@@ -1,26 +1,52 @@
 const createSubscriptionPlan = require('./createSubscriptionPlan')
-const assert = require('assert')
-const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
+const assert = require('assert').strict
+const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
+const Price = require('../../entities/price')
 
 const createSubscriptionPlanSpec = spec({
 
     usecase: createSubscriptionPlan,
 
     'Create a new subscription Plan when it is valid': scenario({
-        'Given a valid subscription Plan': given({
-            request: {
-                name: 'a text',
-                description: 'a text',
-                billingFrequency: 'a text'
+
+        'Valid Subscription Plans': samples([
+            {
+                name: 'Basic Weekly',
+                description: 'Basic weekly plan',
+                billingFrequency: 'w',
+                prices: [
+                    Price.fromJSON({ id: '27d2d6fc-0a26-496a-b97b-e48dad2ea25f' })
+                ]
             },
+            {
+                name: 'Basic Monthly',
+                description: 'Basic monthly plan',
+                billingFrequency: 'm',
+                prices: [
+                    Price.fromJSON({ id: '27d2d6fc-0a26-496a-b97b-e48dad2ea25f' })
+                ]
+            },
+            {
+                name: 'Basic Yearly',
+                description: 'Basic yearly plan',
+                billingFrequency: 'y',
+                prices: [
+                    Price.fromJSON({ id: '27d2d6fc-0a26-496a-b97b-e48dad2ea25f' })
+                ]
+            }
+        ]),
+
+        'Given a valid subscription Plan': given((ctx) => ({
+            request: ctx.sample,
             user: { hasAccess: true },
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async insert (subscriptionPlan) { return (subscriptionPlan) }
+                    async insert (subscriptionPlan) { subscriptionPlan.id = '1'; return subscriptionPlan }
+                    async insertPrices (subscriptionPlan) { return subscriptionPlan.prices }
                 }
             }
-        }),
+        })),
 
         // when: default when for use case
 
@@ -29,40 +55,40 @@ const createSubscriptionPlanSpec = spec({
         }),
 
         'Must return a valid subscription Plan': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
-        // TODO: check if it is really a subscription Plan
+            const subscriptionPlan = ctx.response.ok
+            assert.strictEqual(subscriptionPlan.id, '1')
+            assert.strictEqual(subscriptionPlan.name, ctx.sample.name)
+            assert.strictEqual(subscriptionPlan.description, ctx.sample.description)
+            assert.strictEqual(subscriptionPlan.billingFrequency, ctx.sample.billingFrequency)
+            assert.strictEqual(subscriptionPlan.prices.length, 1)
+            assert.strictEqual(subscriptionPlan.prices[0].id, ctx.sample.prices[0].id)
         })
-
     }),
 
     'Do not create a new subscription Plan when it is invalid': scenario({
         'Given a invalid subscription Plan': given({
             request: {
-                name: true,
-                description: true,
-                billingFrequency: true,
-                prices: true
+                name: '',
+                description: '',
+                billingFrequency: '',
+                prices: []
             },
             user: { hasAccess: true },
-            injection: {
-                subscriptionPlanRepository: new (class SubscriptionPlanRepository {
-                    async insert (subscriptionPlan) { return (subscriptionPlan) }
-                })()
-            }
+            injection: {}
         }),
 
         // when: default when for use case
 
         'Must return an error': check((ctx) => {
             assert.ok(ctx.response.isErr)
-        // assert.ok(ret.isInvalidEntityError)
+            assert.ok(ctx.response.isInvalidEntityError)
         })
 
     })
 })
 
 module.exports =
-  herbarium.specs
-      .add(createSubscriptionPlanSpec, 'CreateSubscriptionPlanSpec')
-      .metadata({ usecase: 'CreateSubscriptionPlan' })
-      .spec
+    herbarium.specs
+        .add(createSubscriptionPlanSpec, 'CreateSubscriptionPlanSpec')
+        .metadata({ usecase: 'CreateSubscriptionPlan' })
+        .spec

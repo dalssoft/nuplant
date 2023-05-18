@@ -1,6 +1,7 @@
 const Price = require('../../entities/price')
+const Product = require('../../entities/product')
 const updatePrice = require('./updatePrice')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -11,23 +12,9 @@ const updatePriceSpec = spec({
 
         'Valid prices': samples([
             {
-                id: 'a text',
-                price: 99
-            },
-            {
-                id: 'a text',
-                price: 99
-            }
-        ]),
-
-        'Valid prices Alternative': samples([
-            {
-                id: 'a text',
-                price: 99
-            },
-            {
-                id: 'a text',
-                price: 99
+                id: '1',
+                price: 99,
+                product: Product.fromJSON({ id: '1' })
             }
         ]),
 
@@ -39,15 +26,17 @@ const updatePriceSpec = spec({
         'Given a repository with a existing price': given((ctx) => ({
             injection: {
                 PriceRepository: class PriceRepository {
-                    async findByID(id) {
+                    async findByID (id) {
                         const fakePrice = {
-                            id: 'a text',
-                            price: 99
+                            id,
+                            price: 99,
+                            productId: '1'
                         }
-                        return ([Price.fromJSON(fakePrice)])
+                        const price = Price.fromJSON(fakePrice, { allowExtraKeys: true })
+                        return ([price])
                     }
 
-                    async update(id) { return true }
+                    async update (price) { return price }
                 }
             }
         })),
@@ -59,7 +48,10 @@ const updatePriceSpec = spec({
         }),
 
         'Must confirm update': check((ctx) => {
-            assert.ok(ctx.response.ok === true)
+            const price = ctx.response.ok
+            assert.equal(price.id, '1')
+            assert.equal(price.price, 99)
+            assert.equal(price.product.id, '1')
         })
 
     }),
@@ -93,7 +85,7 @@ const updatePriceSpec = spec({
             user: { hasAccess: true },
             injection: {
                 PriceRepository: class PriceRepository {
-                    async findByID(id) { return [] }
+                    async findByID (id) { return [] }
                 }
             }
         }),

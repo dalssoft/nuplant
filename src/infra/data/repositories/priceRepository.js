@@ -4,12 +4,12 @@ const Price = require('../../../domain/entities/price')
 const connection = require('../database/connection')
 
 class PriceRepository extends Repository {
-    constructor(injection) {
+    constructor (injection) {
         super({
             entity: Price,
             table: 'prices',
             knex: connection,
-            foreignKeys: [{ productId: String }],
+            foreignKeys: [{ productId: String }]
             // fields: {
             //     product: {
             //         map: { id: 'product_id' },

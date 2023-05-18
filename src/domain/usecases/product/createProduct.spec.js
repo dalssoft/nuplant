@@ -1,5 +1,5 @@
 const createProduct = require('./createProduct')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -16,7 +16,7 @@ const createProductSpec = spec({
             user: { hasAccess: true },
             injection: {
                 ProductRepository: class ProductRepository {
-                    async insert (product) { return (product) }
+                    async insert (product) { product.id = '1'; return product }
                 }
             }
         }),
@@ -29,6 +29,7 @@ const createProductSpec = spec({
 
         'Must return a valid product': check((ctx) => {
             assert.strictEqual(ctx.response.ok.isValid(), true)
+            assert.strictEqual(ctx.response.ok.id, '1')
             assert.strictEqual(ctx.response.ok.name, 'A product')
             assert.strictEqual(ctx.response.ok.description, 'A product description')
         })
@@ -38,8 +39,8 @@ const createProductSpec = spec({
     'Do not create a new product when it is invalid': scenario({
         'Given a invalid product': given({
             request: {
-                name: true,
-                description: true
+                name: '',
+                description: ''
             },
             user: { hasAccess: true },
             injection: {
@@ -53,6 +54,7 @@ const createProductSpec = spec({
 
         'Must return an error': check((ctx) => {
             assert.ok(ctx.response.isErr)
+            assert.ok(ctx.response.isInvalidEntityError)
         })
 
     })

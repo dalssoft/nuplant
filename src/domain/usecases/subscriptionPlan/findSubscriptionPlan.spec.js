@@ -1,6 +1,7 @@
+const Price = require('../../entities/price')
 const SubscriptionPlan = require('../../entities/subscriptionPlan')
 const findSubscriptionPlan = require('./findSubscriptionPlan')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -11,19 +12,24 @@ const findSubscriptionPlanSpec = spec({
     'Find a subscription Plan when it exists': scenario({
         'Given an existing subscription Plan': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async findByID (id) {
                         const fakeSubscriptionPlan = {
-                            id: 'a text',
-                            name: 'a text',
-                            description: 'a text',
-                            billingFrequency: 'a text'
+                            id,
+                            name: 'Basic',
+                            description: 'Basic subscription plan',
+                            billingFrequency: 'm'
                         }
                         return ([SubscriptionPlan.fromJSON(fakeSubscriptionPlan)])
+                    }
+
+                    fetchPrices (subscriptionPlans) {
+                        const fakePrice = Price.fromJSON({ id: '1', value: 1000 })
+                        subscriptionPlans[0].prices = [fakePrice]
                     }
                 }
             }
@@ -36,7 +42,13 @@ const findSubscriptionPlanSpec = spec({
         }),
 
         'Must return a valid subscription Plan': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
+            const subscriptionPlan = ctx.response.ok
+            assert.strictEqual(subscriptionPlan.id, '1')
+            assert.strictEqual(subscriptionPlan.name, 'Basic')
+            assert.strictEqual(subscriptionPlan.description, 'Basic subscription plan')
+            assert.strictEqual(subscriptionPlan.billingFrequency, 'm')
+            assert.strictEqual(subscriptionPlan.prices.length, 1)
+            assert.strictEqual(subscriptionPlan.prices[0].id, '1')
         })
 
     }),
@@ -44,7 +56,7 @@ const findSubscriptionPlanSpec = spec({
     'Do not find a subscription Plan when it does not exist': scenario({
         'Given an empty subscription Plan repository': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {

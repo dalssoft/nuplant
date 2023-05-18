@@ -1,23 +1,28 @@
 const createBillingCycle = require('./createBillingCycle')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
+const CustomerSubscription = require('../../entities/customerSubscription')
 
 const createBillingCycleSpec = spec({
 
     usecase: createBillingCycle,
 
-    'Create a new billing Cycle when it is valid': scenario({
-        'Given a valid billing Cycle': given({
+    'Create a new Billing Cycle when it is valid': scenario({
+        'Given a valid Billing Cycle': given({
             request: {
-                amountDue: 99,
-                paymentStatus: 'a text',
-                paymentProcessorTransactionID: 'a text'
+                customerSubscription: CustomerSubscription.fromJSON({ id: '1' }),
+                startDate: new Date('2020-01-01'),
+                endDate: new Date('2020-01-02'),
+                amountDue: 100,
+                paymentStatus: 'pending',
+                paymentProcessorTransactionID: 'x1',
+                paymentDate: new Date('2020-01-01')
             },
             user: { hasAccess: true },
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
-                    async insert (billingCycle) { return (billingCycle) }
+                    async insert (billingCycle) { billingCycle.id = '1'; return (billingCycle) }
                 }
             }
         }),
@@ -28,23 +33,29 @@ const createBillingCycleSpec = spec({
             assert.ok(ctx.response.isOk)
         }),
 
-        'Must return a valid billing Cycle': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
-        // TODO: check if it is really a billing Cycle
+        'Must return a valid Billing Cycle': check((ctx) => {
+            const billingCycle = ctx.response.ok
+            assert.equal(billingCycle.customerSubscription.id, '1')
+            assert.deepEqual(billingCycle.startDate, new Date('2020-01-01'))
+            assert.deepEqual(billingCycle.endDate, new Date('2020-01-02'))
+            assert.equal(billingCycle.amountDue, 100)
+            assert.equal(billingCycle.paymentStatus, 'pending')
+            assert.equal(billingCycle.paymentProcessorTransactionID, 'x1')
+            assert.deepEqual(billingCycle.paymentDate, new Date('2020-01-01'))
         })
 
     }),
 
-    'Do not create a new billing Cycle when it is invalid': scenario({
-        'Given a invalid billing Cycle': given({
+    'Do not create a new Billing Cycle when it is invalid': scenario({
+        'Given a invalid Billing Cycle': given({
             request: {
-                customerSubscription: true,
-                startDate: true,
-                endDate: true,
-                amountDue: true,
-                paymentStatus: true,
-                paymentProcessorTransactionID: true,
-                paymentDate: true
+                customerSubscription: CustomerSubscription.fromJSON({}),
+                startDate: new Date('2020-01-01'),
+                endDate: new Date('2020-01-02'),
+                amountDue: 100,
+                paymentStatus: 'pending',
+                paymentProcessorTransactionID: 'x1',
+                paymentDate: new Date('2020-01-01')
             },
             user: { hasAccess: true },
             injection: {
@@ -58,14 +69,14 @@ const createBillingCycleSpec = spec({
 
         'Must return an error': check((ctx) => {
             assert.ok(ctx.response.isErr)
-        // assert.ok(ret.isInvalidEntityError)
+            assert.ok(ctx.response.isInvalidEntityError)
         })
 
     })
 })
 
 module.exports =
-  herbarium.specs
-      .add(createBillingCycleSpec, 'CreateBillingCycleSpec')
-      .metadata({ usecase: 'CreateBillingCycle' })
-      .spec
+    herbarium.specs
+        .add(createBillingCycleSpec, 'CreateBillingCycleSpec')
+        .metadata({ usecase: 'CreateBillingCycle' })
+        .spec

@@ -1,6 +1,6 @@
 const User = require('../../entities/user')
 const findUser = require('./findUser')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -18,7 +18,7 @@ const findUserSpec = spec({
                 UserRepository: class UserRepository {
                     async findByID (id) {
                         const fakeUser = {
-                            id: 'a text',
+                            id,
                             nickname: 'a text',
                             registrationNumber: 99,
                             password: 'a text'

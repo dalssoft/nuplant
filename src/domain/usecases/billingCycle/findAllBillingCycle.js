@@ -25,7 +25,7 @@ const findAllBillingCycle = injection =>
         'Find and return all the Billing Cycles': step(async ctx => {
             const repo = new ctx.di.BillingCycleRepository(injection)
             const billingCycles = await repo.findAll(ctx.req)
-            billingCycles.forEach(billingCycle => billingCycle.customerSubscription = CustomerSubscription.fromJSON({ id: billingCycle.customerSubscriptionId }))
+            billingCycles.forEach(billingCycle => (billingCycle.customerSubscription = CustomerSubscription.fromJSON({ id: billingCycle.customerSubscriptionId })))
             return Ok(ctx.ret = billingCycles)
         })
     })

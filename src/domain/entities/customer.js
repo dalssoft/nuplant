@@ -3,7 +3,7 @@ const { herbarium } = require('@herbsjs/herbarium')
 
 const Customer =
     entity('Customer', {
-        id: id(String, {validation: {presence: true}}),
+        id: id(String, { validation: { presence: true } }),
         name: field(String, { validation: { presence: true } }),
         email: field(String, { validation: { presence: true, email: true } }),
         billingAddress: field(String, { validation: { presence: true } })

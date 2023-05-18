@@ -25,7 +25,7 @@ const findAllPrice = injection =>
         'Find and return all the Prices': step(async ctx => {
             const repo = new ctx.di.PriceRepository(injection)
             const prices = await repo.findAll(ctx.req)
-            prices.forEach(price => price.product = Product.fromJSON({ id: price.productId }))
+            prices.forEach(price => (price.product = Product.fromJSON({ id: price.productId })))
             return Ok(ctx.ret = prices)
         })
     })

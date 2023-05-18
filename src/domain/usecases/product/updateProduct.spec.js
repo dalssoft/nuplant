@@ -1,6 +1,6 @@
 const Product = require('../../entities/product')
 const updateProduct = require('./updateProduct')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -27,7 +27,7 @@ const updateProductSpec = spec({
                 ProductRepository: class ProductRepository {
                     async findByID (id) {
                         const fakeProduct = {
-                            id: '1',
+                            id,
                             name: 'A product',
                             description: 'A product description'
                         }
@@ -54,19 +54,30 @@ const updateProductSpec = spec({
     'Do not update a product when it is invalid': scenario({
         'Given a invalid product': given({
             request: {
-                id: true,
-                name: true,
-                description: true
+                id: '1',
+                name: '',
+                description: ''
             },
             user: { hasAccess: true },
-            injection: {}
+            injection: {
+                ProductRepository: class ProductRepository {
+                    async findByID (id) {
+                        const fakeProduct = {
+                            id,
+                            name: 'A product',
+                            description: 'A product description'
+                        }
+                        return ([Product.fromJSON(fakeProduct)])
+                    }
+                }
+            }
         }),
 
         // when: default when for use case
 
         'Must return an error': check((ctx) => {
             assert.ok(ctx.response.isErr)
-            // assert.ok(ctx.response.isInvalidEntityError)
+            assert.ok(ctx.response.isInvalidEntityError)
         })
 
     }),

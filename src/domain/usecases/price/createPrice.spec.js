@@ -1,7 +1,8 @@
 const createPrice = require('./createPrice')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
+const Product = require('../../entities/product')
 
 const createPriceSpec = spec({
 
@@ -10,12 +11,13 @@ const createPriceSpec = spec({
     'Create a new price when it is valid': scenario({
         'Given a valid price': given({
             request: {
-                price: 99
+                price: 99,
+                product: Product.fromJSON({ id: '2' })
             },
             user: { hasAccess: true },
             injection: {
                 PriceRepository: class PriceRepository {
-                    async insert (price) { return (price) }
+                    async insert (price) { price.id = '1'; return price }
                 }
             }
         }),
@@ -27,8 +29,8 @@ const createPriceSpec = spec({
         }),
 
         'Must return a valid price': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
-        // TODO: check if it is really a price
+            assert.strictEqual(ctx.response.ok.id, '1')
+            assert.strictEqual(ctx.response.ok.product.id, '2')
         })
 
     }),
@@ -36,8 +38,8 @@ const createPriceSpec = spec({
     'Do not create a new price when it is invalid': scenario({
         'Given a invalid price': given({
             request: {
-                product: true,
-                price: true
+                price: -1,
+                product: Product.fromJSON({ id: '' })
             },
             user: { hasAccess: true },
             injection: {
@@ -51,14 +53,14 @@ const createPriceSpec = spec({
 
         'Must return an error': check((ctx) => {
             assert.ok(ctx.response.isErr)
-        // assert.ok(ret.isInvalidEntityError)
+            assert.ok(ctx.response.isInvalidEntityError)
         })
 
     })
 })
 
 module.exports =
-  herbarium.specs
-      .add(createPriceSpec, 'CreatePriceSpec')
-      .metadata({ usecase: 'CreatePrice' })
-      .spec
+    herbarium.specs
+        .add(createPriceSpec, 'CreatePriceSpec')
+        .metadata({ usecase: 'CreatePrice' })
+        .spec

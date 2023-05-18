@@ -9,7 +9,7 @@ const dependency = { CustomerSubscriptionRepository }
 
 const createCustomerSubscription = injection =>
     usecase('Create Customer Subscription', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: request.from(CustomerSubscription, { ignoreIDs: true }),
 
         // Output/Response metadata
@@ -22,26 +22,27 @@ const createCustomerSubscription = injection =>
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
         'Check if the Customer Subscription is valid': step(ctx => {
-            ctx.customerSubscription = CustomerSubscription.fromJSON(ctx.req)
+            const customerSubscription = CustomerSubscription.fromJSON(ctx.req)
 
-            if (!ctx.customerSubscription.isValid({ exceptIDs: true, references: { onlyIDs: true } })) {
+            if (!customerSubscription.isValid({ exceptIDs: true, references: { onlyIDs: true } }) ||
+                !customerSubscription.validateDates()) {
                 return Err.invalidEntity({
                     message: 'The Customer Subscription entity is invalid',
                     payload: { entity: 'Customer Subscription' },
-                    cause: ctx.customerSubscription.errors
+                    cause: customerSubscription.errors
                 })
             }
-
+            ctx.customerSubscription = customerSubscription
             return Ok()
         }),
 
         'Save the Customer Subscription': step(async ctx => {
             const repo = new ctx.di.CustomerSubscriptionRepository(injection)
-            
+
             const customerSubscription = ctx.customerSubscription
             customerSubscription.customerId = customerSubscription.customer.id
             customerSubscription.subscriptionPlanId = customerSubscription.subscriptionPlan.id
-            
+
             const newCustomerSubscription = await repo.insert(customerSubscription)
             newCustomerSubscription.customer = Customer.fromJSON({ id: customerSubscription.customerId })
             newCustomerSubscription.subscriptionPlan = SubscriptionPlan.fromJSON({ id: customerSubscription.subscriptionPlanId })
@@ -50,7 +51,7 @@ const createCustomerSubscription = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(createCustomerSubscription, 'CreateCustomerSubscription')
-      .metadata({ group: 'CustomerSubscription', operation: herbarium.crud.create, entity: CustomerSubscription })
-      .usecase
+    herbarium.usecases
+        .add(createCustomerSubscription, 'CreateCustomerSubscription')
+        .metadata({ group: 'CustomerSubscription', operation: herbarium.crud.create, entity: CustomerSubscription })
+        .usecase

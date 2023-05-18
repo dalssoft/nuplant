@@ -1,6 +1,6 @@
 const CustomerSubscription = require('../../entities/customerSubscription')
 const findCustomerSubscription = require('./findCustomerSubscription')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -11,17 +11,21 @@ const findCustomerSubscriptionSpec = spec({
     'Find a customer Subscription when it exists': scenario({
         'Given an existing customer Subscription': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async findByID (id) {
                         const fakeCustomerSubscription = {
-                            id: 'a text',
+                            id,
+                            customerId: '1',
+                            subscriptionPlanId: '1',
+                            startDate: new Date('2020-01-01'),
+                            endDate: new Date('2020-01-02'),
                             active: true
                         }
-                        return ([CustomerSubscription.fromJSON(fakeCustomerSubscription)])
+                        return ([CustomerSubscription.fromJSON(fakeCustomerSubscription, { allowExtraKeys: true })])
                     }
                 }
             }
@@ -34,7 +38,13 @@ const findCustomerSubscriptionSpec = spec({
         }),
 
         'Must return a valid customer Subscription': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
+            const customerSubscription = ctx.response.ok
+            assert.strictEqual(customerSubscription.id, '1')
+            assert.strictEqual(customerSubscription.customer.id, '1')
+            assert.strictEqual(customerSubscription.subscriptionPlan.id, '1')
+            assert.strictEqual(customerSubscription.startDate.getTime(), new Date('2020-01-01').getTime())
+            assert.strictEqual(customerSubscription.endDate.getTime(), new Date('2020-01-02').getTime())
+            assert.strictEqual(customerSubscription.active, true)
         })
 
     }),
@@ -42,7 +52,7 @@ const findCustomerSubscriptionSpec = spec({
     'Do not find a customer Subscription when it does not exist': scenario({
         'Given an empty customer Subscription repository': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
@@ -62,7 +72,7 @@ const findCustomerSubscriptionSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(findCustomerSubscriptionSpec, 'FindCustomerSubscriptionSpec')
-      .metadata({ usecase: 'FindCustomerSubscription' })
-      .spec
+    herbarium.specs
+        .add(findCustomerSubscriptionSpec, 'FindCustomerSubscriptionSpec')
+        .metadata({ usecase: 'FindCustomerSubscription' })
+        .spec

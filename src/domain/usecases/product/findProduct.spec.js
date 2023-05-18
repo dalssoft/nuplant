@@ -1,6 +1,6 @@
 const Product = require('../../entities/product')
 const findProduct = require('./findProduct')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -11,14 +11,14 @@ const findProductSpec = spec({
     'Find a product when it exists': scenario({
         'Given an existing product': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
                 ProductRepository: class ProductRepository {
                     async findByID (id) {
                         const fakeProduct = {
-                            id: '1',
+                            id,
                             name: 'A product',
                             description: 'A product description'
                         }
@@ -35,7 +35,11 @@ const findProductSpec = spec({
         }),
 
         'Must return a valid product': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
+            const product = ctx.response.ok
+            assert.strictEqual(product.isValid(), true)
+            assert.strictEqual(product.id, '1')
+            assert.strictEqual(product.name, 'A product')
+            assert.strictEqual(product.description, 'A product description')
         })
 
     }),

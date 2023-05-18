@@ -1,6 +1,6 @@
 const User = require('../../entities/user')
 const updateUser = require('./updateUser')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -49,7 +49,7 @@ const updateUserSpec = spec({
                 UserRepository: class UserRepository {
                     async findByID (id) {
                         const fakeUser = {
-                            id: 'a text',
+                            id,
                             nickname: 'a text',
                             registrationNumber: 99,
                             password: 'a text'

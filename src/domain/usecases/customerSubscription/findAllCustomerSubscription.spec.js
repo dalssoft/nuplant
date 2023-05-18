@@ -1,6 +1,6 @@
 const CustomerSubscription = require('../../entities/customerSubscription')
 const findAllCustomerSubscription = require('./findAllCustomerSubscription')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -14,12 +14,16 @@ const findAllCustomerSubscriptionSpec = spec({
             user: { hasAccess: true },
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findAll (id) {
+                    async findAll ({ limit, offset }) {
                         const fakeCustomerSubscription = {
-                            id: 'a text',
+                            id: '1',
+                            customerId: '1',
+                            subscriptionPlanId: '1',
+                            startDate: new Date('2020-01-01'),
+                            endDate: new Date('2020-01-02'),
                             active: true
                         }
-                        return ([CustomerSubscription.fromJSON(fakeCustomerSubscription)])
+                        return ([CustomerSubscription.fromJSON(fakeCustomerSubscription, { allowExtraKeys: true })])
                     }
                 }
             }
@@ -33,6 +37,13 @@ const findAllCustomerSubscriptionSpec = spec({
 
         'Must return a list of customer Subscriptions': check((ctx) => {
             assert.strictEqual(ctx.response.ok.length, 1)
+            const customerSubscription = ctx.response.ok[0]
+            assert.strictEqual(customerSubscription.id, '1')
+            assert.strictEqual(customerSubscription.customer.id, '1')
+            assert.strictEqual(customerSubscription.subscriptionPlan.id, '1')
+            assert.strictEqual(customerSubscription.startDate.getTime(), new Date('2020-01-01').getTime())
+            assert.strictEqual(customerSubscription.endDate.getTime(), new Date('2020-01-02').getTime())
+            assert.strictEqual(customerSubscription.active, true)
         })
 
     })
@@ -40,7 +51,7 @@ const findAllCustomerSubscriptionSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(findAllCustomerSubscriptionSpec, 'FindAllCustomerSubscriptionSpec')
-      .metadata({ usecase: 'FindAllCustomerSubscription' })
-      .spec
+    herbarium.specs
+        .add(findAllCustomerSubscriptionSpec, 'FindAllCustomerSubscriptionSpec')
+        .metadata({ usecase: 'FindAllCustomerSubscription' })
+        .spec

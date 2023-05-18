@@ -9,7 +9,7 @@ class BillingCycleRepository extends Repository {
             entity: BillingCycle,
             table: 'billing_cycles',
             knex: connection,
-            foreignKeys: [{ customerSubscriptionId: String }],
+            foreignKeys: [{ customerSubscriptionId: String }]
         })
     }
 }

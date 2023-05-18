@@ -1,6 +1,6 @@
 const CustomerSubscription = require('../../entities/customerSubscription')
 const deleteCustomerSubscription = require('./deleteCustomerSubscription')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -11,7 +11,7 @@ const deleteCustomerSubscriptionSpec = spec({
     'Delete customer Subscription if exists': scenario({
         'Given an existing customer Subscription': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
@@ -37,7 +37,7 @@ const deleteCustomerSubscriptionSpec = spec({
     'Do not delete customer Subscription if it does not exist': scenario({
         'Given an empty customer Subscription repository': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {

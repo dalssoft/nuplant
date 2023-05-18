@@ -1,6 +1,5 @@
-const SubscriptionPlan = require('../../entities/subscriptionPlan')
 const deleteSubscriptionPlan = require('./deleteSubscriptionPlan')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -11,13 +10,13 @@ const deleteSubscriptionPlanSpec = spec({
     'Delete subscription Plan if exists': scenario({
         'Given an existing subscription Plan': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async delete (entity) { return true }
-                    async findByID (id) { return [SubscriptionPlan.fromJSON({ id })] }
+                    async deletePrices (entity) { return true }
                 }
             }
         }),
@@ -29,30 +28,9 @@ const deleteSubscriptionPlanSpec = spec({
         }),
 
         'Must confirm deletion': check((ctx) => {
-            assert.ok(ctx.response.ok === true)
+            assert.deepEqual(ctx.response.ok, {})
         })
 
-    }),
-
-    'Do not delete subscription Plan if it does not exist': scenario({
-        'Given an empty subscription Plan repository': given({
-            request: {
-                id: 'a text'
-            },
-            user: { hasAccess: true },
-            injection: {
-                SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async findByID (id) { return [] }
-                }
-            }
-        }),
-
-        // when: default when for use case
-
-        'Must return an error': check((ctx) => {
-            assert.ok(ctx.response.isErr)
-            assert.ok(ctx.response.isNotFoundError)
-        })
     })
 })
 

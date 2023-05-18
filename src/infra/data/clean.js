@@ -1,7 +1,7 @@
 const readline = require('readline')
 const connection = require('./database/connection')
 
-async function cleanDatabase() {
+async function cleanDatabase () {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
 
     await new Promise((resolve) => rl.question('⚠️ WARNING: This will delete all data from the database. Press ENTER to continue or CTRL + C to abort.', resolve))

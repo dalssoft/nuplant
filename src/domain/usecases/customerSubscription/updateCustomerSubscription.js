@@ -41,7 +41,8 @@ const updateCustomerSubscription = injection =>
             const newCustomerSubscription = Object.assign(oldCustomerSubscription, CustomerSubscription.fromJSON(ctx.req))
             ctx.customerSubscription = newCustomerSubscription
 
-            return newCustomerSubscription.isValid({ references: { onlyIDs: true } })
+            return (newCustomerSubscription.isValid({ references: { onlyIDs: true } }) &&
+                newCustomerSubscription.validateDates())
                 ? Ok()
                 : Err.invalidEntity({
                     message: 'Customer Subscription is invalid',

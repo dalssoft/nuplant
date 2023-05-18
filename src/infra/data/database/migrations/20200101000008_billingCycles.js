@@ -5,7 +5,7 @@ exports.up = async function (knex) {
             if (exists) return
             return knex.schema
                 .createTable('billing_cycles', function (table) {
-                    table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"))
+                    table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'))
                     table.datetime('created_at').notNullable().defaultTo(knex.fn.now())
                     table.uuid('customer_subscription_id').references('id').inTable('customer_subscriptions')
                     table.timestamp('start_date')

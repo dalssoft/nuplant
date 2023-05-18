@@ -1,6 +1,6 @@
 const Price = require('../../entities/price')
 const findAllPrice = require('./findAllPrice')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -14,12 +14,14 @@ const findAllPriceSpec = spec({
             user: { hasAccess: true },
             injection: {
                 PriceRepository: class PriceRepository {
-                    async findAll (id) {
+                    async findAll ({ limit, offset }) {
                         const fakePrice = {
-                            id: 'a text',
+                            id: '1',
                             price: 99
                         }
-                        return ([Price.fromJSON(fakePrice)])
+                        const price = Price.fromJSON(fakePrice)
+                        price.productId = '2'
+                        return ([price])
                     }
                 }
             }
@@ -32,7 +34,10 @@ const findAllPriceSpec = spec({
         }),
 
         'Must return a list of prices': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.length, 1)
+            const prices = ctx.response.ok
+            assert.strictEqual(prices.length, 1)
+            assert.strictEqual(prices[0].id, '1')
+            assert.strictEqual(prices[0].product.id, '2')
         })
 
     })
@@ -40,7 +45,7 @@ const findAllPriceSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(findAllPriceSpec, 'FindAllPriceSpec')
-      .metadata({ usecase: 'FindAllPrice' })
-      .spec
+    herbarium.specs
+        .add(findAllPriceSpec, 'FindAllPriceSpec')
+        .metadata({ usecase: 'FindAllPrice' })
+        .spec

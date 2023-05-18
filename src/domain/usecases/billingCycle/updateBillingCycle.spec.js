@@ -1,63 +1,51 @@
 const BillingCycle = require('../../entities/billingCycle')
 const updateBillingCycle = require('./updateBillingCycle')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
+const CustomerSubscription = require('../../entities/customerSubscription')
 
 const updateBillingCycleSpec = spec({
 
     usecase: updateBillingCycle,
-    'Update a existing billing Cycle when it is valid': scenario({
+    'Update a existing Billing Cycle when it is valid': scenario({
 
-        'Valid billing Cycles': samples([
+        'Valid Billing Cycles': samples([
             {
-                id: 'a text',
-                amountDue: 99,
-                paymentStatus: 'a text',
-                paymentProcessorTransactionID: 'a text'
-            },
-            {
-                id: 'a text',
-                amountDue: 99,
-                paymentStatus: 'a text',
-                paymentProcessorTransactionID: 'a text'
+                id: '1',
+                customerSubscription: CustomerSubscription.fromJSON({ id: '1' }),
+                startDate: new Date('2020-01-01'),
+                endDate: new Date('2020-01-02'),
+                amountDue: 100,
+                paymentStatus: 'pending',
+                paymentProcessorTransactionID: 'x1',
+                paymentDate: new Date('2020-01-01')
             }
         ]),
 
-        'Valid billing Cycles Alternative': samples([
-            {
-                id: 'a text',
-                amountDue: 99,
-                paymentStatus: 'a text',
-                paymentProcessorTransactionID: 'a text'
-            },
-            {
-                id: 'a text',
-                amountDue: 99,
-                paymentStatus: 'a text',
-                paymentProcessorTransactionID: 'a text'
-            }
-        ]),
-
-        'Given a valid billing Cycle': given((ctx) => ({
+        'Given a valid Billing Cycle': given((ctx) => ({
             request: ctx.sample,
             user: { hasAccess: true }
         })),
 
-        'Given a repository with a existing billing Cycle': given((ctx) => ({
+        'Given a repository with a existing Billing Cycle': given((ctx) => ({
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findByID (id) {
                         const fakeBillingCycle = {
-                            id: 'a text',
-                            amountDue: 99,
-                            paymentStatus: 'a text',
-                            paymentProcessorTransactionID: 'a text'
+                            id,
+                            startDate: new Date('2020-01-01'),
+                            endDate: new Date('2020-01-02'),
+                            amountDue: 100,
+                            paymentStatus: 'pending',
+                            paymentProcessorTransactionID: 'x1',
+                            paymentDate: new Date('2020-01-01'),
+                            customerSubscriptionId: '1'
                         }
-                        return ([BillingCycle.fromJSON(fakeBillingCycle)])
+                        return ([BillingCycle.fromJSON(fakeBillingCycle, { allowExtraKeys: true })])
                     }
 
-                    async update (id) { return true }
+                    async update (billingCycle) { return billingCycle }
                 }
             }
         })),
@@ -69,7 +57,15 @@ const updateBillingCycleSpec = spec({
         }),
 
         'Must confirm update': check((ctx) => {
-            assert.ok(ctx.response.ok === true)
+            const billingCycle = ctx.response.ok
+            assert.equal(billingCycle.id, '1')
+            assert.deepEqual(billingCycle.startDate, new Date('2020-01-01'))
+            assert.deepEqual(billingCycle.endDate, new Date('2020-01-02'))
+            assert.equal(billingCycle.amountDue, 100)
+            assert.equal(billingCycle.paymentStatus, 'pending')
+            assert.equal(billingCycle.paymentProcessorTransactionID, 'x1')
+            assert.deepEqual(billingCycle.paymentDate, new Date('2020-01-01'))
+            assert.equal(billingCycle.customerSubscription.id, '1')
         })
 
     }),
@@ -77,24 +73,40 @@ const updateBillingCycleSpec = spec({
     'Do not update a billing Cycle when it is invalid': scenario({
         'Given a invalid billing Cycle': given({
             request: {
-                id: true,
-                customerSubscription: true,
-                startDate: true,
-                endDate: true,
-                amountDue: true,
-                paymentStatus: true,
-                paymentProcessorTransactionID: true,
-                paymentDate: true
+                id: '1',
+                customerSubscription: CustomerSubscription.fromJSON({ }),
+                startDate: new Date('2020-01-01'),
+                endDate: new Date('2020-01-02'),
+                amountDue: 100,
+                paymentStatus: 'pending',
+                paymentProcessorTransactionID: 'x1',
+                paymentDate: new Date('2020-01-01')
             },
             user: { hasAccess: true },
-            injection: {}
+            injection: {
+                BillingCycleRepository: class BillingCycleRepository {
+                    async findByID (id) {
+                        const fakeBillingCycle = {
+                            id,
+                            startDate: new Date('2020-01-01'),
+                            endDate: new Date('2020-01-02'),
+                            amountDue: 100,
+                            paymentStatus: 'pending',
+                            paymentProcessorTransactionID: 'x1',
+                            paymentDate: new Date('2020-01-01'),
+                            customerSubscriptionId: '1'
+                        }
+                        return ([BillingCycle.fromJSON(fakeBillingCycle, { allowExtraKeys: true })])
+                    }
+                }
+            }
         }),
 
         // when: default when for use case
 
         'Must return an error': check((ctx) => {
             assert.ok(ctx.response.isErr)
-        // assert.ok(ctx.response.isInvalidEntityError)
+            assert.ok(ctx.response.isInvalidEntityError)
         })
 
     }),
@@ -102,10 +114,14 @@ const updateBillingCycleSpec = spec({
     'Do not update billing Cycle if it does not exist': scenario({
         'Given an empty billing Cycle repository': given({
             request: {
-                id: 'a text',
-                amountDue: 99,
-                paymentStatus: 'a text',
-                paymentProcessorTransactionID: 'a text'
+                id: '1',
+                customerSubscription: CustomerSubscription.fromJSON({ id: '1' }),
+                startDate: new Date('2020-01-01'),
+                endDate: new Date('2020-01-02'),
+                amountDue: 100,
+                paymentStatus: 'pending',
+                paymentProcessorTransactionID: 'x1',
+                paymentDate: new Date('2020-01-01')
             },
             user: { hasAccess: true },
             injection: {
@@ -125,7 +141,7 @@ const updateBillingCycleSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(updateBillingCycleSpec, 'UpdateBillingCycleSpec')
-      .metadata({ usecase: 'UpdateBillingCycle' })
-      .spec
+    herbarium.specs
+        .add(updateBillingCycleSpec, 'UpdateBillingCycleSpec')
+        .metadata({ usecase: 'UpdateBillingCycle' })
+        .spec

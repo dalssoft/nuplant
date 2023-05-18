@@ -26,7 +26,7 @@ async function start (config) {
     const app = express()
     await auth(app, config)
     await rest(app, config)
-    //await graphql(app, config)
+    // await graphql(app, config)
     await shelf(app, config)
 
     return app.listen(

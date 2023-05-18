@@ -1,6 +1,6 @@
 const Customer = require('../../entities/customer')
 const updateCustomer = require('./updateCustomer')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -28,7 +28,7 @@ const updateCustomerSpec = spec({
                 CustomerRepository: class CustomerRepository {
                     async findByID (id) {
                         const fakeCustomer = {
-                            id: '1',
+                            id,
                             name: 'Samantha',
                             email: 'customer@email.com',
                             billingAddress: 'Street 1'

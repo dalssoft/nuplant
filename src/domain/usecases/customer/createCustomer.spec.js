@@ -1,5 +1,5 @@
 const createCustomer = require('./createCustomer')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -17,7 +17,7 @@ const createCustomerSpec = spec({
             user: { hasAccess: true },
             injection: {
                 CustomerRepository: class CustomerRepository {
-                    async insert (customer) { return (customer) }
+                    async insert (customer) { customer.id = '1'; return (customer) }
                 }
             }
         }),
@@ -29,10 +29,11 @@ const createCustomerSpec = spec({
         }),
 
         'Must return a valid customer': check((ctx) => {
-            assert.strictEqual(ctx.response.ok.isValid(), true)
-            assert.strictEqual(ctx.response.ok.name, 'Samantha')
-            assert.strictEqual(ctx.response.ok.email, 'customer@email.com')
-            assert.strictEqual(ctx.response.ok.billingAddress, 'Street 1')
+            const customer = ctx.response.ok
+            assert.equal(customer.id, '1')
+            assert.equal(customer.name, 'Samantha')
+            assert.equal(customer.email, 'customer@email.com')
+            assert.equal(customer.billingAddress, 'Street 1')
         })
 
     }),

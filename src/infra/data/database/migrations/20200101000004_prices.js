@@ -5,7 +5,7 @@ exports.up = async function (knex) {
             if (exists) return
             return knex.schema
                 .createTable('prices', function (table) {
-                    table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"))
+                    table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'))
                     table.datetime('created_at').notNullable().defaultTo(knex.fn.now())
                     table.uuid('product_id').references('id').inTable('products').notNullable()
                     table.decimal('price')

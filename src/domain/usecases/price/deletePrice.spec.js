@@ -1,6 +1,6 @@
 const Price = require('../../entities/price')
 const deletePrice = require('./deletePrice')
-const assert = require('assert')
+const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
@@ -37,7 +37,7 @@ const deletePriceSpec = spec({
     'Do not delete price if it does not exist': scenario({
         'Given an empty price repository': given({
             request: {
-                id: 'a text'
+                id: '1'
             },
             user: { hasAccess: true },
             injection: {
