@@ -22,6 +22,7 @@ const createCustomerSubscriptionSpec = spec({
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async insert (customerSubscription) { customerSubscription.id = '1'; return (customerSubscription) }
+                    async hasActiveSubscription (customerId) { return false }
                 }
             }
         }),
@@ -87,6 +88,31 @@ const createCustomerSubscriptionSpec = spec({
             assert.ok(ctx.response.err.cause.startDate[0].tooLate)
         })
 
+    }),
+
+    'Do not create a new Customer Subscription if Customer already has an active subscription': scenario({
+        'Given a active Customer Subscription': given({
+            request: {
+                customer: Customer.fromJSON({ id: '1' }),
+                subscriptionPlan: SubscriptionPlan.fromJSON({ id: '1' }),
+                startDate: new Date('2020-01-01'),
+                endDate: new Date('2020-01-02'),
+                active: true
+            },
+            user: { hasAccess: true },
+            injection: {
+                CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
+                    async hasActiveSubscription (customerId) { return true }
+                }
+            }
+        }),
+
+        // when: default when for use case
+
+        'Must return an error': check((ctx) => {
+            assert.ok(ctx.response.isErr)
+            assert.equal(ctx.response.err.message, 'The Customer already has a Subscription')
+        })
     })
 })
 

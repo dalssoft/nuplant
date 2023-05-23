@@ -1,25 +1,25 @@
 const CustomerSubscription = require('../../entities/customerSubscription')
-const findCustomerSubscription = require('./findCustomerSubscription')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
+const findCustomerSubscriptionByCustomer = require('./findCustomerSubscriptionByCustomer')
 
-const findCustomerSubscriptionSpec = spec({
+const findCustomerSubscriptionByCustomerSpec = spec({
 
-    usecase: findCustomerSubscription,
+    usecase: findCustomerSubscriptionByCustomer,
 
-    'Find a Customer Subscription when it exists': scenario({
-        'Given an existing Customer Subscription': given({
+    'Find a Customer Subscription when customer exists': scenario({
+        'Given an active Customer Subscription for a Customer': given({
             request: {
                 id: '1'
             },
             user: { hasAccess: true },
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findByID (id) {
+                    async find({ where }) {
                         const fakeCustomerSubscription = {
-                            id,
-                            customerId: '1',
+                            id: '1',
+                            customerId: where.customer_id,
                             subscriptionPlanId: '1',
                             startDate: new Date('2020-01-01'),
                             endDate: new Date('2020-01-02'),
@@ -49,7 +49,7 @@ const findCustomerSubscriptionSpec = spec({
 
     }),
 
-    'Do not find a Customer Subscription when it does not exist': scenario({
+    'Do not find a Customer Subscription when customer does not exist': scenario({
         'Given an empty Customer Subscription repository': given({
             request: {
                 id: '1'
@@ -57,7 +57,9 @@ const findCustomerSubscriptionSpec = spec({
             user: { hasAccess: true },
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findByID (id) { return [] }
+                    async find({ where }) {
+                        return []
+                    }
                 }
             }
         }),
@@ -73,6 +75,6 @@ const findCustomerSubscriptionSpec = spec({
 
 module.exports =
     herbarium.specs
-        .add(findCustomerSubscriptionSpec, 'FindCustomerSubscriptionSpec')
-        .metadata({ usecase: 'FindCustomerSubscription' })
+        .add(findCustomerSubscriptionByCustomerSpec, 'FindCustomerSubscriptionByCustomerSpec')
+        .metadata({ usecase: 'FindCustomerSubscriptionByCustomer' })
         .spec

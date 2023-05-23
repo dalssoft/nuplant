@@ -13,7 +13,8 @@ const SubscriptionPlan =
                 contains: { allowed: ['w', 'm', 'y'] }
             }
         }),
-        prices: field([Price])
+        prices: field([Price]),
+        active: field(Boolean)
     })
 
 module.exports =

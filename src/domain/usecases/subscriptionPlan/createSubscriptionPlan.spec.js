@@ -17,7 +17,8 @@ const createSubscriptionPlanSpec = spec({
                 billingFrequency: 'w',
                 prices: [
                     Price.fromJSON({ id: '27d2d6fc-0a26-496a-b97b-e48dad2ea25f' })
-                ]
+                ],
+                active: true
             },
             {
                 name: 'Basic Monthly',
@@ -25,7 +26,8 @@ const createSubscriptionPlanSpec = spec({
                 billingFrequency: 'm',
                 prices: [
                     Price.fromJSON({ id: '27d2d6fc-0a26-496a-b97b-e48dad2ea25f' })
-                ]
+                ],
+                active: true
             },
             {
                 name: 'Basic Yearly',
@@ -33,7 +35,8 @@ const createSubscriptionPlanSpec = spec({
                 billingFrequency: 'y',
                 prices: [
                     Price.fromJSON({ id: '27d2d6fc-0a26-496a-b97b-e48dad2ea25f' })
-                ]
+                ],
+                active: true
             }
         ]),
 
@@ -62,6 +65,7 @@ const createSubscriptionPlanSpec = spec({
             assert.strictEqual(subscriptionPlan.billingFrequency, ctx.sample.billingFrequency)
             assert.strictEqual(subscriptionPlan.prices.length, 1)
             assert.strictEqual(subscriptionPlan.prices[0].id, ctx.sample.prices[0].id)
+            assert.strictEqual(subscriptionPlan.active, ctx.sample.active)
         })
     }),
 

@@ -1,14 +1,15 @@
+const Customer = require('../../entities/customer')
 const CustomerSubscription = require('../../entities/customerSubscription')
-const deleteCustomerSubscription = require('./deleteCustomerSubscription')
+const cancelCustomerSubscription = require('./cancelCustomerSubscription')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
 
-const deleteCustomerSubscriptionSpec = spec({
+const cancelCustomerSubscriptionSpec = spec({
 
-    usecase: deleteCustomerSubscription,
+    usecase: cancelCustomerSubscription,
 
-    'Delete Customer Subscription if exists': scenario({
+    'Cancel Customer Subscription if exists': scenario({
         'Given an existing Customer Subscription': given({
             request: {
                 id: '1'
@@ -16,8 +17,19 @@ const deleteCustomerSubscriptionSpec = spec({
             user: { hasAccess: true },
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async delete(entity) { return true }
-                    async findByID(id) { return [CustomerSubscription.fromJSON({ id })] }
+                    async findByID (id) {
+                        const fakeCustomerSubscription = {
+                            id,
+                            customerId: '1',
+                            subscriptionPlanId: '1',
+                            startDate: new Date('2020-01-01'),
+                            endDate: new Date('2020-01-02'),
+                            active: true
+                        }
+                        return ([CustomerSubscription.fromJSON(fakeCustomerSubscription, { allowExtraKeys: true })])
+                    }
+
+                    async update (customerSubscription) { return customerSubscription }
                 }
             }
         }),
@@ -28,13 +40,13 @@ const deleteCustomerSubscriptionSpec = spec({
             assert.ok(ctx.response.isOk)
         }),
 
-        'Must confirm deletion': check((ctx) => {
+        'Must confirm cancelation': check((ctx) => {
             assert.ok(ctx.response.ok === true)
         })
 
     }),
 
-    'Do not delete Customer Subscription if it does not exist': scenario({
+    'Do not cancel if there is no Customer Subscription for the given Customer': scenario({
         'Given an empty Customer Subscription repository': given({
             request: {
                 id: '1'
@@ -42,7 +54,9 @@ const deleteCustomerSubscriptionSpec = spec({
             user: { hasAccess: true },
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findByID(id) { return [] }
+                    async findByID (id) {
+                        return []
+                    }
                 }
             }
         }),
@@ -58,6 +72,6 @@ const deleteCustomerSubscriptionSpec = spec({
 
 module.exports =
     herbarium.specs
-        .add(deleteCustomerSubscriptionSpec, 'DeleteCustomerSubscriptionSpec')
-        .metadata({ usecase: 'DeleteCustomerSubscription' })
+        .add(cancelCustomerSubscriptionSpec, 'CancelCustomerSubscriptionSpec')
+        .metadata({ usecase: 'CancelCustomerSubscription' })
         .spec

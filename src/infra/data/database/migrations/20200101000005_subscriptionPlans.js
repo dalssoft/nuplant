@@ -9,7 +9,8 @@ exports.up = async function (knex) {
                     table.datetime('created_at').notNullable().defaultTo(knex.fn.now())
                     table.string('name')
                     table.string('description')
-                    table.string('billing_frequency')
+                    table.string('billing_frequency'),
+                    table.boolean('active')
                 })
         })
 }

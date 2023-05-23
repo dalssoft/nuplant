@@ -22,6 +22,7 @@ const createCustomerSubscription = injection =>
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
         'Check if the Customer Subscription is valid': step(ctx => {
+
             const customerSubscription = CustomerSubscription.fromJSON(ctx.req)
 
             if (!customerSubscription.isValid({ exceptIDs: true, references: { onlyIDs: true } }) ||
@@ -33,6 +34,19 @@ const createCustomerSubscription = injection =>
                 })
             }
             ctx.customerSubscription = customerSubscription
+            return Ok()
+        }),
+
+        'Check if the Customer already has a Subscription': step(async ctx => {
+            const repo = new ctx.di.CustomerSubscriptionRepository(injection)
+            const customer = ctx.customerSubscription.customer
+            const hasActiveSubscription = await repo.hasActiveSubscription(customer)
+            if (hasActiveSubscription) {
+                return Err({
+                    message: 'The Customer already has a Subscription',
+                    payload: { entity: 'Customer Subscription' }
+                })
+            }
             return Ok()
         }),
 
