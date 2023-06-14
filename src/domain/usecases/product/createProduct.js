@@ -7,7 +7,7 @@ const dependency = { ProductRepository }
 
 const createProduct = injection =>
     usecase('Create Product', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: request.from(Product, { ignoreIDs: true }),
 
         // Output/Response metadata
@@ -44,7 +44,7 @@ const createProduct = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(createProduct, 'CreateProduct')
-      .metadata({ group: 'Product', operation: herbarium.crud.create, entity: Product })
-      .usecase
+    herbarium.usecases
+        .add(createProduct, 'CreateProduct')
+        .metadata({ group: 'Product', operation: herbarium.crud.create, entity: Product })
+        .usecase
