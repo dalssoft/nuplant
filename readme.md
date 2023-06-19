@@ -45,3 +45,7 @@ View all the use cases and its steps in just one place with Herbs Shelf:
 ```
 http://localhost:3000/herbsshelf
 ```
+
+## API Testing
+
+To test the API, you can use the Insomnia and import the file in `/src/infra/api/Insomnia.json`.
