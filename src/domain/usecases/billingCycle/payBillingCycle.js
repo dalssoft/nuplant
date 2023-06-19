@@ -4,23 +4,26 @@ const BillingCycle = require('../../entities/billingCycle')
 const BillingCycleRepository = require('../../../infra/data/repositories/billingCycleRepository')
 const CustomerSubscription = require('../../entities/customerSubscription')
 
-const dependency = { BillingCycleRepository }
+const dependency = { BillingCycleRepository, Date }
 
-const updateBillingCycle = injection =>
-    usecase('Update Billing Cycle', {
+const payBillingCycle = injection =>
+    usecase('Pay Billing Cycle', {
         // Input/Request metadata and validation
-        request: request.from(BillingCycle),
+        request: {
+            id: String,
+            paymentProcessorTransactionID: String,
+        },
 
         // Output/Response metadata
         response: BillingCycle,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canUpdateBillingCycle ? Ok() : Err()),
+        // authorize: (user) => (user.canPayBillingCycle ? Ok() : Err()),
         authorize: () => Ok(),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
-        'Retrieve the Billing Cycle': step(async ctx => {
+        'Retrieve the Billing Cycle to be paid': step(async ctx => {
             const id = ctx.req.id
             const repo = new ctx.di.BillingCycleRepository(injection)
             const [billingCycle] = await repo.findByID(id)
@@ -35,24 +38,35 @@ const updateBillingCycle = injection =>
             return Ok(billingCycle)
         }),
 
-        'Check if it is a valid Billing Cycle before update': step(ctx => {
-            const oldBillingCycle = ctx.billingCycle
-            const newBillingCycle = Object.assign(oldBillingCycle, BillingCycle.fromJSON(ctx.req))
-            ctx.billingCycle = newBillingCycle
+        'Check if the Billing Cycle is already paid': step(ctx => {
+            const billingCycle = ctx.billingCycle
+            return billingCycle.paymentStatus === 'paid'
+                ? Err({
+                    message: 'Billing Cycle is already paid',
+                    payload: { entity: 'Billing Cycle' }
+                })
+                : Ok()
+        }),
 
-            return newBillingCycle.isValid({ references: { onlyIDs: true } })
+        'Check if it is a valid Billing Cycle before save as paid': step(ctx => {
+            const billingCycle = ctx.billingCycle
+            billingCycle.paymentStatus = 'paid'
+            billingCycle.paymentProcessorTransactionID = ctx.req.paymentProcessorTransactionID
+            billingCycle.paymentDate = new ctx.di.Date
+            billingCycle.customerSubscription = CustomerSubscription.fromJSON({ id: billingCycle.customerSubscriptionId })
+
+            return billingCycle.isValid({ references: { onlyIDs: true } })
                 ? Ok()
                 : Err.invalidEntity({
-                    message: 'BillingCycle is invalid',
+                    message: 'Billing Cycle is invalid',
                     payload: { entity: 'Billing Cycle' },
-                    cause: newBillingCycle.errors
+                    cause: billingCycle.errors
                 })
         }),
 
         'Update the Billing Cycle': step(async ctx => {
             const repo = new ctx.di.BillingCycleRepository(injection)
             const billingCycle = ctx.billingCycle
-            ctx.billingCycle.customerSubscriptionId = ctx.billingCycle.customerSubscription.id
             const updated = await repo.update(billingCycle)
             updated.customerSubscription = CustomerSubscription.fromJSON({ id: updated.customerSubscriptionId })
             return (ctx.ret = updated)
@@ -62,6 +76,6 @@ const updateBillingCycle = injection =>
 
 module.exports =
     herbarium.usecases
-        .add(updateBillingCycle, 'UpdateBillingCycle')
+        .add(payBillingCycle, 'PayBillingCycle')
         .metadata({ group: 'BillingCycle', operation: herbarium.crud.update, entity: BillingCycle })
         .usecase

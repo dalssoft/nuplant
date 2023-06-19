@@ -40,6 +40,21 @@ async function herbs2rest({ server, config }) {
         }]
     })
 
+    herbarium.usecases.get('PayBillingCycle').metadata({
+        REST: [{
+            version: 'v1',
+            method: 'POST',
+            path: '/v1/billingCycles/:id/pay',
+            parameters: {
+                params: {
+                    id: String
+                }, body: {
+                    paymentProcessorTransactionID: String,
+                }
+            },
+        }]
+    })
+
     // 2. Populate the metadata
     // Each use case will be populated with the metadata:
     // version, resource, method, path, parameters, parametersHandler, controller
