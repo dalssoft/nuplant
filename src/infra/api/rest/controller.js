@@ -1,4 +1,6 @@
-const controller = async ({ usecase, request, authorizationInfo, res, next }) => {
+const { logOK, logException } = require('../../log/api')
+
+const controller = async ({ usecase, request, authorizationInfo, req, res, next, path, method }) => {
     try {
         const uc = usecase()
 
@@ -14,7 +16,11 @@ const controller = async ({ usecase, request, authorizationInfo, res, next }) =>
         const response = await uc.run(request)
 
         /* Audit */
+        // eslint-disable-next-line no-console
         // console.info(uc.auditTrail)
+
+        /* Log */
+        logOK({ uc, response, transport: 'REST', endpoint: `${method} ${path}` })
 
         /* Response */
         if (response.isOk) {
@@ -33,7 +39,7 @@ const controller = async ({ usecase, request, authorizationInfo, res, next }) =>
         }
         res.end()
     } catch (error) {
-        console.error(error)
+        logException({ error, transport: 'REST', endpoint: `${method} ${path}` })
         res.status(500).json({ error: error.name, message: error.message })
         next()
     }

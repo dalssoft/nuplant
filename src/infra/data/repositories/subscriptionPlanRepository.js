@@ -40,7 +40,7 @@ class SubscriptionPlanRepository extends Repository {
         }))
 
         const result = await this.knex('subscription_plan_prices').insert(pricesToInsert).returning('price_id')
-        const newPrices = result.map(priceId => Price.fromJSON({ id: priceId }))
+        const newPrices = result.map(price => Price.fromJSON({ id: price.price_id }))
         return newPrices
     }
 

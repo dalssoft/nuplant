@@ -26,7 +26,7 @@
     "dependencies": {
         "@herbsjs/herbarium": "^1.5.0",
         "@herbsjs/herbs": "^2.1.0-beta.6",
-        "@herbsjs/herbs2gql": "^3.1.0-beta.1",
+        "@herbsjs/herbs2gql": "^4.0.0-beta.2",
         "@herbsjs/herbs2knex": "2.1.1-beta.3",
         "@herbsjs/herbs2rest": "4.1.0-beta.10",
         "@herbsjs/herbsshelf": "^5.1.0-beta.5",
@@ -42,14 +42,14 @@
         "knex": "^2.4.2",
         "lodash.camelcase": "^4.3.0",
         "mocha": "^10.0.0",
-        "nodemon": "^2.0.19",
+        "nodemon": "^1.14.9",
         "pg": "^8.7.3",
         "sugar-env": "^1.5.14"
     },
     "devDependencies": {
         "eslint": "^8.39.0",
         "eslint-config-standard": "^17.0.0",
-        "eslint-plugin-import": "^2.27.5",
+        "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-n": "^15.7.0",
         "eslint-plugin-promise": "^6.1.1"
     }

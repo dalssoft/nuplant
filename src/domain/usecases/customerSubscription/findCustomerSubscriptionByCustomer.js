@@ -42,5 +42,5 @@ const findCustomerSubscriptionByCustomer = injection =>
 module.exports =
   herbarium.usecases
       .add(findCustomerSubscriptionByCustomer, 'FindCustomerSubscriptionByCustomer')
-      .metadata({ group: 'CustomerSubscription', operation: herbarium.crud.read, entity: CustomerSubscription })
+      .metadata({ group: 'CustomerSubscription' })
       .usecase

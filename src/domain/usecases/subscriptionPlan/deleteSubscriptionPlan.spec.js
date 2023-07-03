@@ -28,7 +28,7 @@ const deleteSubscriptionPlanSpec = spec({
         }),
 
         'Must confirm deletion': check((ctx) => {
-            assert.deepEqual(ctx.response.ok, {})
+            assert.deepEqual(ctx.response.ok, true)
         })
 
     })

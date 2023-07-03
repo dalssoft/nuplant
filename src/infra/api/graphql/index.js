@@ -2,8 +2,10 @@ const { ApolloServer, gql } = require('apollo-server-express')
 const { herbs2gql } = require('@herbsjs/herbs2gql')
 const { herbarium } = require('@herbsjs/herbarium')
 const resolver = require('./resolver')
+const CancelCustomerSubscription = require('../../../domain/usecases/customerSubscription/cancelCustomerSubscription')
+const FindCustomerSubscriptionByCustomer = require('../../../domain/usecases/customerSubscription//findCustomerSubscriptionByCustomer')
 
-async function graphql (app, config) {
+async function graphql(app, config) {
     // Herbs to GraphQL will generate the GraphQL schema and resolvers
     // based on your entities and use cases.
 
@@ -15,10 +17,17 @@ async function graphql (app, config) {
 
     // 2. Add Custom Schema and Resolver
     // Types, Queries, Mutations can receive custom items
-    // queries.push(require('./custom/getItem'))
-    // mutations.push(require('./custom/createItem'))
-    // types.push(require('./custom/Item'))
     types.push(require('./custom/date'))
+    types.push([`input CancelCustomerSubscriptionInput { id: String! }`])
+    mutations.push([
+        'extend type Mutation { cancelCustomerSubscription (input: CancelCustomerSubscriptionInput): Boolean }',
+        { Mutation: { cancelCustomerSubscription: resolver(CancelCustomerSubscription) } }
+    ])
+
+    queries.push([
+        'extend type Query { findCustomerSubscriptionByCustomer (id: String) : CustomerSubscription }',
+        { Query: { findCustomerSubscriptionByCustomer: resolver(FindCustomerSubscriptionByCustomer) } }
+    ])
 
     /* Default Schemas */
     types.unshift([
@@ -41,8 +50,8 @@ async function graphql (app, config) {
         playground: true,
         typeDefs,
         resolvers
-    // Authorization
-    // context: ({ req }) => ({ user })
+        // Authorization
+        // context: ({ req }) => ({ user })
     })
     await server.start()
     server.applyMiddleware({ app, path: config.api.graphql.rootPath })

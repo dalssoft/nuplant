@@ -36,6 +36,7 @@ const createSubscriptionPlan = injection =>
             const repo = new ctx.di.SubscriptionPlanRepository(injection)
             const toBeSaved = ctx.subscriptionPlan
             const saved = await repo.insert(toBeSaved)
+            toBeSaved.id = saved.id
             saved.prices = await repo.insertPrices(toBeSaved)
             return Ok(ctx.ret = saved)
         })

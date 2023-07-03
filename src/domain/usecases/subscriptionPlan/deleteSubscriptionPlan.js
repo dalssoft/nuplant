@@ -26,7 +26,7 @@ const deleteSubscriptionPlan = injection =>
             const repo = new ctx.di.SubscriptionPlanRepository(injection)
             await repo.deletePrices(ctx.subscriptionPlan)
             await repo.delete(ctx.subscriptionPlan)
-            return Ok()
+            return Ok(ctx.ret = true)
         })
     })
 
