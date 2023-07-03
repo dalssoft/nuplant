@@ -1,34 +1,43 @@
 # nuplant
 
-Recurring Billing Software
+General Recurring Billing System
 
-## What it does
+# Domain
 
-Nuplant is a recurring billing software that manages customer's subscriptions.
+### What it does
 
-It is a demo project to show how to use [Herbs](https://herbsjs.org) in a real world application.
+Recurring Billing System is a software that manages customer's subscriptions. Different from one-time billing, recurring billing is a payment model that allows customers to pay for products or services on a pre-scheduled basis.
 
-## What it does not do
+Nuplant is also a demo project to show how to use [Herbs](https://herbsjs.org) in a real world application.
 
-Nuplant does not process payments, it only generate bills. The payment process is done by a third party system.
+### What it does not do
 
-## Main features
+Nuplant does not process payments, it only generate bills. The payment process should be done by a third party system.
 
-Nuplant magages the following entities and its use cases:
+### Main features
 
-- Products 
+**Products**: The ideia it to keep the basic information about the product, like name, description. For a detailed information about the product, it should be stored in a third party system.
+<br><br>
+**Customers**: The ideia it to keep the basic information about the customer, like name, email, etc. For a detailed information about the customer, it should be stored in a third party system.
+<br><br>
+**Subscriptions**: Manage subscriptions names and products prices for each subscription. A subscription can have multiple products.
+<br><br>
+**Customers Subscriptions**: Manage the subscriptions for each customer. A customer can have more than one subscription.
+<br><br>
+**Billing Cycles**: Manage the billing cycles for each customer subscription. A billing cycle is a period of time that the customer will be charged for the subscription. For example, a monthly subscription will have a billing cycle of 30 days. 
 
-- Customers 
 
-- Subscriptions 
+### Documentation
 
-- Customer's Subscriptions 
+View all the use cases and its steps in just one place with Herbs Shelf:
 
-- Price 
+```
+http://localhost:3000/herbsshelf
+```
 
-- Billing 
+### Technical details
 
-## Using
+### Using
 
 To start the project for the first time:
 
@@ -38,14 +47,7 @@ $ npm run knex:migrate
 $ npm start
 ```
 
-## Documentation
 
-View all the use cases and its steps in just one place with Herbs Shelf:
-
-```
-http://localhost:3000/herbsshelf
-```
-
-## API Testing
+### API Use and Test
 
 To test the API, you can use the Insomnia and import the file in `/src/infra/api/Insomnia.json`.
