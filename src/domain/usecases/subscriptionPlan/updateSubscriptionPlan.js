@@ -48,12 +48,17 @@ const updateSubscriptionPlan = injection =>
                 })
         }),
 
-        'Update the Subscription Plan': step(async ctx => {
-            const repo = new ctx.di.SubscriptionPlanRepository(injection)
-            await repo.deletePrices(ctx.subscriptionPlan)
-            const saved = await repo.update(ctx.subscriptionPlan)
-            saved.prices = await repo.insertPrices(ctx.subscriptionPlan)
-            return Ok(ctx.ret = saved)
+        'Update the Subscription Plan': step({
+            'Erase old Prices': step(async ctx => {
+                const repo = new ctx.di.SubscriptionPlanRepository(injection)
+                await repo.deletePrices(ctx.subscriptionPlan)
+            }),
+            'Update the Subscription Plan with new Prices': step(async ctx => {
+                const repo = new ctx.di.SubscriptionPlanRepository(injection)
+                const saved = await repo.update(ctx.subscriptionPlan)
+                saved.prices = await repo.insertPrices(ctx.subscriptionPlan)
+                return Ok(ctx.ret = saved)
+            })
         })
     })
 
