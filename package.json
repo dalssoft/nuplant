@@ -13,8 +13,8 @@
         "db:runSeeds": "npx knex --knexfile knexFile.js seed:run",
         "db:clean": "node ./src/infra/data/clean.js",
         "db:reset": "npm run db:clean && npm run db:migrate && npm run db:runSeeds",
-        "docker:run": "docker-compose up --build",
-        "docker:run:db": "docker-compose up --build db",
+        "docker:run": "docker-compose -f src/infra/docker/docker-compose.yml -p nuplant up --build",
+        "docker:run:db": "docker-compose -f src/infra/docker/docker-compose.yml -p nuplant up --build db",
         "test": "npm run spec",
         "spec": "herbs spec"
     },

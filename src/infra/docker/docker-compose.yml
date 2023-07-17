@@ -1,7 +1,9 @@
 version: '3'
 services:
   web:
-    build: .
+    build:
+      context: ../../../
+      dockerfile: ./src/infra/docker/Dockerfile
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -12,7 +14,7 @@ services:
     command: ["postgres", "-c", "log_statement=all"]
     restart: unless-stopped
     volumes:
-      - ./src/infra/docker/postgres-uuid-ossp.sh:/docker-entrypoint-initdb.d/postgres-uuid-ossp.sh
+      - ./postgres-uuid-ossp.sh:/docker-entrypoint-initdb.d/postgres-uuid-ossp.sh
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
