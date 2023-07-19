@@ -18,7 +18,7 @@ const findCustomerSubscriptionByCustomer = injection =>
         response: CustomerSubscription,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canFindOneCustomerSubscription ? Ok() : Err()),
+        // authorize: (user) => (user.canFindCustomerSubscriptionByCustomer ? Ok() : Err()),
         authorize: () => Ok(),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),

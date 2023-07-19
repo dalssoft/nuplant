@@ -1,14 +1,9 @@
 const express = require('express')
-const cors = require('cors')
-const { json } = require('body-parser')
 const { populateMetadata, generateEndpoints } = require('@herbsjs/herbs2rest')
 const { herbarium } = require('@herbsjs/herbarium')
 const controller = require('./controller')
 
 async function rest(app, config) {
-    // Request security
-    app.use(json({ limit: '50mb' }))
-    app.use(cors())
 
     const server = new express.Router()
 
@@ -22,6 +17,8 @@ async function herbs2rest({ server, config }) {
     // based on your use cases and entities.
 
     // 1. Prepare your use cases metadata if needed
+    herbarium.usecases.get('FindUser').metadata({ REST: false })
+
     herbarium.usecases.get('CancelCustomerSubscription').metadata({
         REST: [{
             version: 'v1',
@@ -46,11 +43,8 @@ async function herbs2rest({ server, config }) {
             method: 'POST',
             path: '/v1/billingCycles/:id/pay',
             parameters: {
-                params: {
-                    id: String
-                }, body: {
-                    paymentProcessorTransactionID: String,
-                }
+                params: { id: String },
+                body: { paymentProcessorTransactionID: String }
             },
         }]
     })

@@ -49,15 +49,15 @@ async function graphql(app, config) {
         introspection: true,
         playground: true,
         typeDefs,
-        resolvers
+        resolvers, 
         // Authorization
-        // context: ({ req }) => ({ user })
+        context: ({ req }) => ({ user: req.user })
     })
     await server.start()
     server.applyMiddleware({ app, path: config.api.graphql.rootPath })
 
     // eslint-disable-next-line no-console
-    console.info(`\n🔗 GraphQL endpoint - ${config.api.graphql.rootPath}`)
+    console.info(`🔗 GraphQL endpoint - ${config.api.graphql.rootPath}`)
 }
 
 module.exports = { graphql }

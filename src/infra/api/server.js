@@ -1,29 +1,17 @@
 const express = require('express')
-const { herbsshelf } = require('@herbsjs/herbsshelf')
 const { herbarium } = require('@herbsjs/herbarium')
 
+const { sec } = require('./sec')
 const { auth } = require('./auth')
 const { graphql } = require('./graphql')
 const { rest } = require('./rest')
-
-function shelf (app, config) {
-    app.get('/herbsshelf', (_, res) => {
-        res.setHeader('Content-Type', 'text/html')
-        const shelf = herbsshelf({ project: 'nuplant', herbarium })
-        res.write(shelf)
-        res.end()
-    })
-
-    app.get('/', (req, res) => res.status(301).redirect('/herbsshelf'))
-
-    // eslint-disable-next-line no-console
-    console.info('\n🌿 Herbs Shelf endpoint - /herbsshelf \n')
-}
+const { shelf } = require('./shelf')
 
 async function start (config) {
     herbarium.requireAll()
 
     const app = express()
+    await sec(app, config)
     await auth(app, config)
     await rest(app, config)
     await graphql(app, config)
@@ -32,7 +20,7 @@ async function start (config) {
     return app.listen(
         { port: config.api.port },
         // eslint-disable-next-line no-console
-        () => console.log(`🚀 Server UP and 🌪️  - http://localhost:${config.api.port}/\n`))
+        () => console.log(`🚀 Server ready! \n\nhttp://localhost:${config.api.port}/\n`))
 }
 
 module.exports = { start }

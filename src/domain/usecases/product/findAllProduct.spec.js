@@ -1,4 +1,5 @@
 const Product = require('../../entities/product')
+const User = require('../../entities/user')
 const findAllProduct = require('./findAllProduct')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -11,7 +12,7 @@ const findAllProductSpec = spec({
     'Find all products': scenario({
         'Given an existing product': given({
             request: { limit: 0, offset: 0 },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindAllProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
                     async findAll ({ limit, offset }) {

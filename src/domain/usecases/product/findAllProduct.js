@@ -1,4 +1,4 @@
-const { usecase, step, Ok } = require('@herbsjs/herbs')
+const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 const Product = require('../../entities/product')
 const ProductRepository = require('../../../infra/data/repositories/productRepository')
@@ -17,7 +17,7 @@ const findAllProduct = injection =>
         response: [Product],
 
         // Authorization with Audit
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('FindAllProduct') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
