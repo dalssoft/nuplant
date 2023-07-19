@@ -4,6 +4,7 @@ const User = require('../../domain/entities/user')
 const findUser = require('../../domain/usecases/user/findUser')
 const { logException } = require('../log/api')
 
+// JWT token examples:
 // OK: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyN2QyZDZmYy0wYTI2LTQ5NmEtYjk3Yi1lNDhkYWQyZWEyNWYifQ.5Qt_vosv98VuNmJ8WiI-UVoRcp-vq-KG9fGRqS8UySY
 // Not found: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyN2QyZDZmYy0wYTI2LTQ5NmEtYjk3Yi1lNDhkYWQyZWEyNTEifQ.b7XqSLYOK2tw6HpQaqn27BvZ5Ss9rMIe0PYY8fQXYHU
 

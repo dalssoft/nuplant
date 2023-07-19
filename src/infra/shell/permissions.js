@@ -1,9 +1,4 @@
-const user = {
-    canCreateUser: true,
-    canFindOneUser: true,
-    canDeleteUser: false,
-    canGetListUser: true,
-    canUpdateUser: true
-}
+const User = require('../../domain/entities/user')
+const user = new User()
 
 module.exports = user

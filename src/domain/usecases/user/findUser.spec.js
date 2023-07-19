@@ -46,11 +46,11 @@ const findUserSpec = spec({
       request: {
         id: '123'
       },
-      user: { hasAccess: true },
+      user: {},
       injection: {
         UserRepository: class UserRepository {
           async findByID(userId) {
-            return ([])
+            return ([null])
           }
         }
       },
@@ -58,10 +58,10 @@ const findUserSpec = spec({
 
     // when: default when for use case
 
-    'Must return an error': check((ctx) => {
-      assert.ok(ctx.response.isErr)
-      assert.ok(ctx.response.isNotFoundError)
-    }),
+    'Must return a valid user with Id and no permissions': check((ctx) => {
+      assert.equal(ctx.response.ok.id, '123')
+      assert.deepEqual(ctx.response.ok.permissions, [])
+    })
   }),
 })
 
