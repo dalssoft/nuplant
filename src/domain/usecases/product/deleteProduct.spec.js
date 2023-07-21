@@ -1,4 +1,5 @@
 const Product = require('../../entities/product')
+const User = require('../../entities/user')
 const deleteProduct = require('./deleteProduct')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -13,7 +14,7 @@ const deleteProductSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['DeleteProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
                     async delete (entity) { return true }
@@ -39,7 +40,7 @@ const deleteProductSpec = spec({
             request: {
                 id: 'a text'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['DeleteProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
                     async findByID (id) { return [] }

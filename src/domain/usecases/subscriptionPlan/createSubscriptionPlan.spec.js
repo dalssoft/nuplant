@@ -1,4 +1,5 @@
 const createSubscriptionPlan = require('./createSubscriptionPlan')
+const User = require('../../entities/user')
 const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
@@ -42,7 +43,7 @@ const createSubscriptionPlanSpec = spec({
 
         'Given a valid subscription Plan': given((ctx) => ({
             request: ctx.sample,
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async insert (subscriptionPlan) { subscriptionPlan.id = '1'; return subscriptionPlan }
@@ -77,7 +78,7 @@ const createSubscriptionPlanSpec = spec({
                 billingFrequency: '',
                 prices: []
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateSubscriptionPlan'] }),
             injection: {}
         }),
 

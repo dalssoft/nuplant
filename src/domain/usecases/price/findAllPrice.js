@@ -18,7 +18,7 @@ const findAllPrice = injection =>
         response: [Price],
 
         // Authorization with Audit
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('FindAllPrice') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 

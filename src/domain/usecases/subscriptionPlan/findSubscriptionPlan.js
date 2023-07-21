@@ -7,7 +7,7 @@ const dependency = { SubscriptionPlanRepository }
 
 const findSubscriptionPlan = injection =>
     usecase('Find a Subscription Plan', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             id: String
         },
@@ -16,8 +16,7 @@ const findSubscriptionPlan = injection =>
         response: SubscriptionPlan,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canFindOneSubscriptionPlan ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('FindSubscriptionPlan') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -37,7 +36,7 @@ const findSubscriptionPlan = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(findSubscriptionPlan, 'FindSubscriptionPlan')
-      .metadata({ group: 'SubscriptionPlan', operation: herbarium.crud.read, entity: SubscriptionPlan })
-      .usecase
+    herbarium.usecases
+        .add(findSubscriptionPlan, 'FindSubscriptionPlan')
+        .metadata({ group: 'SubscriptionPlan', operation: herbarium.crud.read, entity: SubscriptionPlan })
+        .usecase

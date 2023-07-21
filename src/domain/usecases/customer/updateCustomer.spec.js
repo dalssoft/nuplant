@@ -1,4 +1,5 @@
 const Customer = require('../../entities/customer')
+const User = require('../../entities/user')
 const updateCustomer = require('./updateCustomer')
 const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
@@ -20,7 +21,7 @@ const updateCustomerSpec = spec({
 
         'Given a valid customer': given((ctx) => ({
             request: ctx.sample,
-            user: { hasAccess: true }
+            user: User.fromJSON({ id: '123', permissions: ['UpdateCustomer'] }),
         })),
 
         'Given a repository with a existing customer': given((ctx) => ({
@@ -61,7 +62,7 @@ const updateCustomerSpec = spec({
                 email: true,
                 billingAddress: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateCustomer'] }),
             injection: {}
         }),
 
@@ -82,7 +83,7 @@ const updateCustomerSpec = spec({
                 email: 'customer@email.com',
                 billingAddress: 'Street 1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
                     async findByID (id) { return [] }

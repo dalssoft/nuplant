@@ -7,7 +7,7 @@ const dependency = { CustomerSubscriptionRepository }
 
 const deleteCustomerSubscription = injection =>
     usecase('Delete Customer Subscription', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             id: String
         },
@@ -16,8 +16,7 @@ const deleteCustomerSubscription = injection =>
         response: Boolean,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canDeleteCustomerSubscription ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('DeleteCustomerSubscription') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -42,7 +41,7 @@ const deleteCustomerSubscription = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(deleteCustomerSubscription, 'DeleteCustomerSubscription')
-      .metadata({ group: 'CustomerSubscription', operation: herbarium.crud.delete, entity: CustomerSubscription })
-      .usecase
+    herbarium.usecases
+        .add(deleteCustomerSubscription, 'DeleteCustomerSubscription')
+        .metadata({ group: 'CustomerSubscription', operation: herbarium.crud.delete, entity: CustomerSubscription })
+        .usecase

@@ -35,7 +35,7 @@ View all the use cases and its steps in just one place with Herbs Shelf:
 http://localhost:3000/herbsshelf
 ```
 
-### Technical details
+## Herbs Demo - Technical Overview
 
 ### Using
 
@@ -43,11 +43,23 @@ To start the project for the first time:
 
 ```bash
 $ npm install
-$ npm run knex:migrate 
+$ npm run docker:run
+$ npm run db:reset
 $ npm start
 ```
 
-
 ### API Use and Test
 
-To test the API, you can use the Insomnia and import the file in `/src/infra/api/Insomnia.json`.
+It is possible to test the API using [Insomnia](https://insomnia.rest/) importing the file in: `/src/infra/api/Insomnia.json`
+
+To test authenticated routes, use "Manage Enviroments" in Insomnia to set the JWT token.
+
+To generate a JWT token, use [jwt.io](https://jwt.io/) with the following payload:
+
+```json
+{
+    "userId": "37d2d6fc-0a26-496a-b97b-e48dad2ea25f1",
+}
+```
+
+And the correct JWT secret. Be careful to not expose production secrets.

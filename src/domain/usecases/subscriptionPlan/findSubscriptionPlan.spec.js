@@ -1,4 +1,5 @@
 const Price = require('../../entities/price')
+const User = require('../../entities/user')
 const SubscriptionPlan = require('../../entities/subscriptionPlan')
 const findSubscriptionPlan = require('./findSubscriptionPlan')
 const assert = require('assert').strict
@@ -14,7 +15,7 @@ const findSubscriptionPlanSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async findByID (id) {
@@ -58,7 +59,7 @@ const findSubscriptionPlanSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async findByID (id) { return [] }

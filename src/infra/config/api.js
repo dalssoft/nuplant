@@ -8,6 +8,6 @@ module.exports = {
         rootPath: env.get('GRAPHQL_ROOT_PATH', '/graphql')
     }, 
     auth: {
-        jwtSecret: env.get('JWT_SECRET'),
+        jwtSecret: env.get('JWT_SECRET', 'secret'), // use this secret for demo purposes only
     }
 }

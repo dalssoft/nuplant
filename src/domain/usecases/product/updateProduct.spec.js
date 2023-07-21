@@ -1,4 +1,5 @@
 const Product = require('../../entities/product')
+const User = require('../../entities/user')
 const updateProduct = require('./updateProduct')
 const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
@@ -19,7 +20,7 @@ const updateProductSpec = spec({
 
         'Given a valid product': given((ctx) => ({
             request: ctx.sample,
-            user: { hasAccess: true }
+            user: User.fromJSON({ id: '123', permissions: ['UpdateProduct'] }),
         })),
 
         'Given a repository with a existing product': given((ctx) => ({
@@ -58,7 +59,7 @@ const updateProductSpec = spec({
                 name: '',
                 description: ''
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
                     async findByID (id) {
@@ -89,7 +90,7 @@ const updateProductSpec = spec({
                 name: 'A product',
                 description: 'A product description'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
                     async findByID (id) { return [] }

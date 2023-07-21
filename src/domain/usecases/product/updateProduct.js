@@ -8,15 +8,14 @@ const dependency = { ProductRepository }
 
 const updateProduct = injection =>
     usecase('Update Product', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: request.from(Product),
 
         // Output/Response metadata
         response: Product,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canUpdateProduct ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('UpdateProduct') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -58,7 +57,7 @@ const updateProduct = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(updateProduct, 'UpdateProduct')
-      .metadata({ group: 'Product', operation: herbarium.crud.update, entity: Product })
-      .usecase
+    herbarium.usecases
+        .add(updateProduct, 'UpdateProduct')
+        .metadata({ group: 'Product', operation: herbarium.crud.update, entity: Product })
+        .usecase

@@ -1,4 +1,5 @@
 const Price = require('../../entities/price')
+const User = require('../../entities/user')
 const findAllPrice = require('./findAllPrice')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -11,7 +12,7 @@ const findAllPriceSpec = spec({
     'Find all prices': scenario({
         'Given an existing price': given({
             request: { limit: 0, offset: 0 },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindAllPrice'] }),
             injection: {
                 PriceRepository: class PriceRepository {
                     async findAll ({ limit, offset }) {

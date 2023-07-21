@@ -1,4 +1,5 @@
 const BillingCycle = require('../../entities/billingCycle')
+const User = require('../../entities/user')
 const findBillingCycle = require('./findBillingCycle')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -13,7 +14,7 @@ const findBillingCycleSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findByID (id) {
@@ -58,7 +59,7 @@ const findBillingCycleSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findByID (id) { return [] }

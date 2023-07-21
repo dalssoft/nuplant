@@ -14,8 +14,7 @@ const createProduct = injection =>
         response: Product,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canCreateProduct ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('CreateProduct') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 

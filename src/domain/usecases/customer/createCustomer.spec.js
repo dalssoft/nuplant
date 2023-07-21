@@ -1,4 +1,5 @@
 const createCustomer = require('./createCustomer')
+const User = require('../../entities/user')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
@@ -14,7 +15,7 @@ const createCustomerSpec = spec({
                 email: 'customer@email.com',
                 billingAddress: 'Street 1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
                     async insert (customer) { customer.id = '1'; return (customer) }
@@ -45,7 +46,7 @@ const createCustomerSpec = spec({
                 email: true,
                 billingAddress: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateCustomer'] }),
             injection: {
                 customerRepository: new (class CustomerRepository {
                     async insert (customer) { return (customer) }

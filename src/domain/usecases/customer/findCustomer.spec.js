@@ -1,4 +1,5 @@
 const Customer = require('../../entities/customer')
+const User = require('../../entities/user')
 const findCustomer = require('./findCustomer')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -13,7 +14,7 @@ const findCustomerSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
                     async findByID (id) {
@@ -46,7 +47,7 @@ const findCustomerSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
                     async findByID (id) { return [] }

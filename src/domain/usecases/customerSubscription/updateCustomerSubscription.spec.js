@@ -1,4 +1,5 @@
 const CustomerSubscription = require('../../entities/customerSubscription')
+const User = require('../../entities/user')
 const updateCustomerSubscription = require('./updateCustomerSubscription')
 const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
@@ -25,7 +26,7 @@ const updateCustomerSubscriptionSpec = spec({
 
         'Given a valid Customer Subscription': given((ctx) => ({
             request: ctx.sample,
-            user: { hasAccess: true }
+            user: User.fromJSON({ id: '123', permissions: ['UpdateCustomerSubscription'] }),
         })),
 
         'Given a repository with a existing Customer Subscription': given((ctx) => ({
@@ -76,7 +77,7 @@ const updateCustomerSubscriptionSpec = spec({
                 endDate: new Date(),
                 active: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async findByID (id) {
@@ -113,7 +114,7 @@ const updateCustomerSubscriptionSpec = spec({
                 endDate: new Date(),
                 active: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async findByID (id) { return [] }
@@ -139,7 +140,7 @@ const updateCustomerSubscriptionSpec = spec({
                 endDate: new Date('2020-01-01'),
                 active: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async findByID (id) {

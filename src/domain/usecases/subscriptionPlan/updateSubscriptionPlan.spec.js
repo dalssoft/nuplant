@@ -1,4 +1,5 @@
 const Price = require('../../entities/price')
+const User = require('../../entities/user')
 const SubscriptionPlan = require('../../entities/subscriptionPlan')
 const updateSubscriptionPlan = require('./updateSubscriptionPlan')
 const assert = require('assert').strict
@@ -45,7 +46,7 @@ const updateSubscriptionPlanSpec = spec({
 
         'Given a valid Subscription Plan': given((ctx) => ({
             request: ctx.sample,
-            user: { hasAccess: true }
+            user: User.fromJSON({ id: '123', permissions: ['UpdateSubscriptionPlan'] }),
         })),
 
         'Given a repository with a existing Subscription Plan': given((ctx) => ({
@@ -95,7 +96,7 @@ const updateSubscriptionPlanSpec = spec({
                 billingFrequency: '',
                 prices: []
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async findByID (id) {
@@ -127,7 +128,7 @@ const updateSubscriptionPlanSpec = spec({
                 description: 'Basic weekly plan',
                 billingFrequency: 'w'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdateSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async findByID (id) { return [] }

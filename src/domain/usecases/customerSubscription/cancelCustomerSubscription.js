@@ -17,8 +17,7 @@ const cancelCustomerSubscription = injection =>
         response: Boolean,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canDeleteCustomerSubscription ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('CancelCustomerSubscription') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 

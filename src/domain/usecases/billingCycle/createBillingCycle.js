@@ -8,15 +8,14 @@ const dependency = { BillingCycleRepository }
 
 const createBillingCycle = injection =>
     usecase('Create Billing Cycle', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: request.from(BillingCycle, { ignoreIDs: true }),
 
         // Output/Response metadata
         response: BillingCycle,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canCreateBillingCycle ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('CreateBillingCycle') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -45,7 +44,7 @@ const createBillingCycle = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(createBillingCycle, 'CreateBillingCycle')
-      .metadata({ group: 'BillingCycle', operation: herbarium.crud.create, entity: BillingCycle })
-      .usecase
+    herbarium.usecases
+        .add(createBillingCycle, 'CreateBillingCycle')
+        .metadata({ group: 'BillingCycle', operation: herbarium.crud.create, entity: BillingCycle })
+        .usecase

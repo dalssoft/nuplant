@@ -20,8 +20,8 @@ async function auth(app, config) {
         } catch (err) {
             error = err
         }
-        logException({ error: err, endpoint: 'auth', transport: 'HTTP', user: { id: userId } })
-        return done(err, false)
+        logException({ error, endpoint: 'auth', transport: 'HTTP', user: { id: userId } })
+        return done(error, false)
     }
 
     function authRequestHandler(req, res, next) {

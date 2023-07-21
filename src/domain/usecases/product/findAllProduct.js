@@ -7,7 +7,7 @@ const dependency = { ProductRepository }
 
 const findAllProduct = injection =>
     usecase('Find all Products', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             limit: Number,
             offset: Number
@@ -30,7 +30,7 @@ const findAllProduct = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(findAllProduct, 'FindAllProduct')
-      .metadata({ group: 'Product', operation: herbarium.crud.readAll, entity: Product })
-      .usecase
+    herbarium.usecases
+        .add(findAllProduct, 'FindAllProduct')
+        .metadata({ group: 'Product', operation: herbarium.crud.readAll, entity: Product })
+        .usecase

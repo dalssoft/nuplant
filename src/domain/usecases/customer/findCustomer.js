@@ -7,7 +7,7 @@ const dependency = { CustomerRepository }
 
 const findCustomer = injection =>
     usecase('Find a Customer', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             id: String
         },
@@ -16,8 +16,7 @@ const findCustomer = injection =>
         response: Customer,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canFindOneCustomer ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('FindCustomer') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -37,7 +36,7 @@ const findCustomer = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(findCustomer, 'FindCustomer')
-      .metadata({ group: 'Customer', operation: herbarium.crud.read, entity: Customer })
-      .usecase
+    herbarium.usecases
+        .add(findCustomer, 'FindCustomer')
+        .metadata({ group: 'Customer', operation: herbarium.crud.read, entity: Customer })
+        .usecase

@@ -8,7 +8,7 @@ const dependency = { PriceRepository }
 
 const findPrice = injection =>
     usecase('Find a Price', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             id: String
         },
@@ -17,8 +17,7 @@ const findPrice = injection =>
         response: Price,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canFindOnePrice ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('FindPrice') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -38,7 +37,7 @@ const findPrice = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(findPrice, 'FindPrice')
-      .metadata({ group: 'Price', operation: herbarium.crud.read, entity: Price })
-      .usecase
+    herbarium.usecases
+        .add(findPrice, 'FindPrice')
+        .metadata({ group: 'Price', operation: herbarium.crud.read, entity: Price })
+        .usecase

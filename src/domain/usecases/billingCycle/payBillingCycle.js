@@ -18,8 +18,7 @@ const payBillingCycle = injection =>
         response: BillingCycle,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canPayBillingCycle ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('PayBillingCycle') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -77,5 +76,5 @@ const payBillingCycle = injection =>
 module.exports =
     herbarium.usecases
         .add(payBillingCycle, 'PayBillingCycle')
-        .metadata({ group: 'BillingCycle', operation: herbarium.crud.update, entity: BillingCycle })
+        .metadata({ group: 'BillingCycle', entity: BillingCycle })
         .usecase

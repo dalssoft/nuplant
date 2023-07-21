@@ -7,7 +7,7 @@ const dependency = { PriceRepository }
 
 const deletePrice = injection =>
     usecase('Delete Price', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             id: String
         },
@@ -16,8 +16,7 @@ const deletePrice = injection =>
         response: Boolean,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canDeletePrice ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('DeletePrice') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -42,7 +41,7 @@ const deletePrice = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(deletePrice, 'DeletePrice')
-      .metadata({ group: 'Price', operation: herbarium.crud.delete, entity: Price })
-      .usecase
+    herbarium.usecases
+        .add(deletePrice, 'DeletePrice')
+        .metadata({ group: 'Price', operation: herbarium.crud.delete, entity: Price })
+        .usecase

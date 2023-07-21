@@ -7,7 +7,7 @@ const dependency = { BillingCycleRepository }
 
 const deleteBillingCycle = injection =>
     usecase('Delete Billing Cycle', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             id: String
         },
@@ -16,8 +16,7 @@ const deleteBillingCycle = injection =>
         response: Boolean,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canDeleteBillingCycle ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('DeleteBillingCycle') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -41,7 +40,7 @@ const deleteBillingCycle = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(deleteBillingCycle, 'DeleteBillingCycle')
-      .metadata({ group: 'BillingCycle', operation: herbarium.crud.delete, entity: BillingCycle })
-      .usecase
+    herbarium.usecases
+        .add(deleteBillingCycle, 'DeleteBillingCycle')
+        .metadata({ group: 'BillingCycle', operation: herbarium.crud.delete, entity: BillingCycle })
+        .usecase

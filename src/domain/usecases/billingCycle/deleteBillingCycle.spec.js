@@ -1,4 +1,5 @@
 const BillingCycle = require('../../entities/billingCycle')
+const User = require('../../entities/user')
 const deleteBillingCycle = require('./deleteBillingCycle')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -13,7 +14,7 @@ const deleteBillingCycleSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['DeleteBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async delete (entity) { return true }
@@ -39,7 +40,7 @@ const deleteBillingCycleSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['DeleteBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findByID (id) { return [] }

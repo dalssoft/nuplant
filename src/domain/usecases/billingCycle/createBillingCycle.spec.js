@@ -1,4 +1,5 @@
 const createBillingCycle = require('./createBillingCycle')
+const User = require('../../entities/user')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
@@ -19,7 +20,7 @@ const createBillingCycleSpec = spec({
                 paymentProcessorTransactionID: 'x1',
                 paymentDate: new Date('2020-01-01')
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async insert (billingCycle) { billingCycle.id = '1'; return (billingCycle) }
@@ -57,7 +58,7 @@ const createBillingCycleSpec = spec({
                 paymentProcessorTransactionID: 'x1',
                 paymentDate: new Date('2020-01-01')
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateBillingCycle'] }),
             injection: {
                 billingCycleRepository: new (class BillingCycleRepository {
                     async insert (billingCycle) { return (billingCycle) }

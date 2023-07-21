@@ -4,6 +4,7 @@ const { herbarium } = require('@herbsjs/herbarium')
 const resolver = require('./resolver')
 const CancelCustomerSubscription = require('../../../domain/usecases/customerSubscription/cancelCustomerSubscription')
 const FindCustomerSubscriptionByCustomer = require('../../../domain/usecases/customerSubscription//findCustomerSubscriptionByCustomer')
+const PayBillingCycle = require('../../../domain/usecases/billingCycle/payBillingCycle')
 
 async function graphql(app, config) {
     // Herbs to GraphQL will generate the GraphQL schema and resolvers
@@ -22,6 +23,12 @@ async function graphql(app, config) {
     mutations.push([
         'extend type Mutation { cancelCustomerSubscription (input: CancelCustomerSubscriptionInput): Boolean }',
         { Mutation: { cancelCustomerSubscription: resolver(CancelCustomerSubscription) } }
+    ])
+    
+    types.push([`input PayBillingCycleInput { id: String!, paymentProcessorTransactionID: String! }`])
+    mutations.push([
+        'extend type Mutation { payBillingCycle (input: PayBillingCycleInput): BillingCycle }',
+        { Mutation: { payBillingCycle: resolver(PayBillingCycle) } }
     ])
 
     queries.push([

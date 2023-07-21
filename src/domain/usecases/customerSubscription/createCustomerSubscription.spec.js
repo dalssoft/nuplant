@@ -1,4 +1,5 @@
 const Customer = require('../../entities/customer')
+const User = require('../../entities/user')
 const SubscriptionPlan = require('../../entities/subscriptionPlan')
 const createCustomerSubscription = require('./createCustomerSubscription')
 const assert = require('assert').strict
@@ -18,7 +19,7 @@ const createCustomerSubscriptionSpec = spec({
                 endDate: new Date('2020-01-02'),
                 active: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async insert (customerSubscription) { customerSubscription.id = '1'; return (customerSubscription) }
@@ -54,7 +55,7 @@ const createCustomerSubscriptionSpec = spec({
                 endDate: new Date('2020-01-01'),
                 active: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateCustomerSubscription'] }),
             injection: {}
         }),
 
@@ -76,7 +77,7 @@ const createCustomerSubscriptionSpec = spec({
                 endDate: new Date('2020-01-01'),
                 active: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateCustomerSubscription'] }),
             injection: {}
         }),
 
@@ -99,7 +100,7 @@ const createCustomerSubscriptionSpec = spec({
                 endDate: new Date('2020-01-02'),
                 active: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async hasActiveSubscription (customerId) { return true }

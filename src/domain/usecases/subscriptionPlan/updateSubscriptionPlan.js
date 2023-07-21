@@ -14,8 +14,7 @@ const updateSubscriptionPlan = injection =>
         response: SubscriptionPlan,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canUpdateSubscriptionPlan ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('UpdateSubscriptionPlan') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 

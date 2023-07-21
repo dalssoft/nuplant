@@ -17,8 +17,7 @@ const findBillingCycle = injection =>
         response: BillingCycle,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canFindOneBillingCycle ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('FindBillingCycle') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 

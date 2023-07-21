@@ -1,4 +1,5 @@
 const Customer = require('../../entities/customer')
+const User = require('../../entities/user')
 const deleteCustomer = require('./deleteCustomer')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -13,7 +14,7 @@ const deleteCustomerSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['DeleteCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
                     async delete (entity) { return true }
@@ -39,7 +40,7 @@ const deleteCustomerSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['DeleteCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
                     async findByID (id) { return [] }

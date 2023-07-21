@@ -1,4 +1,5 @@
 const Price = require('../../entities/price')
+const User = require('../../entities/user')
 const Product = require('../../entities/product')
 const updatePrice = require('./updatePrice')
 const assert = require('assert').strict
@@ -20,7 +21,7 @@ const updatePriceSpec = spec({
 
         'Given a valid price': given((ctx) => ({
             request: ctx.sample,
-            user: { hasAccess: true }
+            user: User.fromJSON({ id: '123', permissions: ['UpdatePrice'] }),
         })),
 
         'Given a repository with a existing price': given((ctx) => ({
@@ -63,7 +64,7 @@ const updatePriceSpec = spec({
                 product: true,
                 price: true
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdatePrice'] }),
             injection: {}
         }),
 
@@ -82,7 +83,7 @@ const updatePriceSpec = spec({
                 id: 'a text',
                 price: 99
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['UpdatePrice'] }),
             injection: {
                 PriceRepository: class PriceRepository {
                     async findByID (id) { return [] }

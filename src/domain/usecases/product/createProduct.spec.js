@@ -1,4 +1,5 @@
 const createProduct = require('./createProduct')
+const User = require('../../entities/user')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
@@ -13,7 +14,7 @@ const createProductSpec = spec({
                 name: 'A product',
                 description: 'A product description'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
                     async insert (product) { product.id = '1'; return product }
@@ -42,7 +43,7 @@ const createProductSpec = spec({
                 name: '',
                 description: ''
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreateProduct'] }),
             injection: {
                 productRepository: new (class ProductRepository {
                     async insert (product) { return (product) }

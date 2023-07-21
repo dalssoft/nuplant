@@ -8,7 +8,7 @@ const dependency = { BillingCycleRepository }
 
 const findAllBillingCycle = injection =>
     usecase('Find all Billing Cycles', {
-    // Input/Request metadata and validation
+        // Input/Request metadata and validation
         request: {
             limit: Number,
             offset: Number
@@ -18,7 +18,7 @@ const findAllBillingCycle = injection =>
         response: [BillingCycle],
 
         // Authorization with Audit
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('FindAllBillingCycle') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 
@@ -31,7 +31,7 @@ const findAllBillingCycle = injection =>
     })
 
 module.exports =
-  herbarium.usecases
-      .add(findAllBillingCycle, 'FindAllBillingCycle')
-      .metadata({ group: 'BillingCycle', operation: herbarium.crud.readAll, entity: BillingCycle })
-      .usecase
+    herbarium.usecases
+        .add(findAllBillingCycle, 'FindAllBillingCycle')
+        .metadata({ group: 'BillingCycle', operation: herbarium.crud.readAll, entity: BillingCycle })
+        .usecase

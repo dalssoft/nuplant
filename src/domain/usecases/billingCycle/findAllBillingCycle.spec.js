@@ -1,4 +1,5 @@
 const BillingCycle = require('../../entities/billingCycle')
+const User = require('../../entities/user')
 const findAllBillingCycle = require('./findAllBillingCycle')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -11,7 +12,7 @@ const findAllBillingCycleSpec = spec({
     'Find all billing Cycles': scenario({
         'Given an existing billing Cycle': given({
             request: { limit: 0, offset: 0 },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindAllBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findAll ({ limit, offset }) {

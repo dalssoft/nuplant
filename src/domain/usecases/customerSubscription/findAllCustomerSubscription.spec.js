@@ -1,4 +1,5 @@
 const CustomerSubscription = require('../../entities/customerSubscription')
+const User = require('../../entities/user')
 const findAllCustomerSubscription = require('./findAllCustomerSubscription')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
@@ -11,7 +12,7 @@ const findAllCustomerSubscriptionSpec = spec({
     'Find all customer Subscriptions': scenario({
         'Given an existing customer Subscription': given({
             request: { limit: 0, offset: 0 },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['FindAllCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async findAll ({ limit, offset }) {

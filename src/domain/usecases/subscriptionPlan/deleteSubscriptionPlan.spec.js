@@ -1,4 +1,5 @@
 const deleteSubscriptionPlan = require('./deleteSubscriptionPlan')
+const User = require('../../entities/user')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
@@ -12,7 +13,7 @@ const deleteSubscriptionPlanSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['DeleteSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
                     async delete (entity) { return true }

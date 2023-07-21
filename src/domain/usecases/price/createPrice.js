@@ -14,8 +14,7 @@ const createPrice = injection =>
         response: Price,
 
         // Authorization with Audit
-        // authorize: (user) => (user.canCreatePrice ? Ok() : Err()),
-        authorize: () => Ok(),
+        authorize: (user) => (user.can('CreatePrice') ? Ok() : Err()),
 
         setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
 

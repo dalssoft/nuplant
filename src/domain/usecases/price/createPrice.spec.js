@@ -1,4 +1,5 @@
 const createPrice = require('./createPrice')
+const User = require('../../entities/user')
 const assert = require('assert').strict
 const { spec, scenario, given, check } = require('@herbsjs/herbs').specs
 const { herbarium } = require('@herbsjs/herbarium')
@@ -14,7 +15,7 @@ const createPriceSpec = spec({
                 price: 99,
                 product: Product.fromJSON({ id: '2' })
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreatePrice'] }),
             injection: {
                 PriceRepository: class PriceRepository {
                     async insert (price) { price.id = '1'; return price }
@@ -41,7 +42,7 @@ const createPriceSpec = spec({
                 price: -1,
                 product: Product.fromJSON({ id: '' })
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CreatePrice'] }),
             injection: {
                 priceRepository: new (class PriceRepository {
                     async insert (price) { return (price) }

@@ -1,4 +1,5 @@
 const BillingCycle = require('../../entities/billingCycle')
+const User = require('../../entities/user')
 const payBillingCycle = require('./payBillingCycle')
 const assert = require('assert').strict
 const { spec, scenario, given, check, samples } = require('@herbsjs/herbs').specs
@@ -33,7 +34,7 @@ const payBillingCycleSpec = spec({
 
         'Given a existing Billing Cycle': given((ctx) => ({
             request: ctx.sample.request,
-            user: { hasAccess: true }
+            user: User.fromJSON({ id: '123', permissions: ['PayBillingCycle'] }),
         })),
 
         'Given a repository with a existing Billing Cycle': given((ctx) => ({
@@ -77,7 +78,7 @@ const payBillingCycleSpec = spec({
                 id: '1',
                 paymentProcessorTransactionID: undefined,
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['PayBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findByID(id) { return [] }
@@ -99,7 +100,7 @@ const payBillingCycleSpec = spec({
                 id: '1',
                 paymentProcessorTransactionID: undefined,
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['PayBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
                     async findByID(id) {

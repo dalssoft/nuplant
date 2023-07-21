@@ -1,4 +1,4 @@
-const Customer = require('../../entities/customer')
+const User = require('../../entities/user')
 const CustomerSubscription = require('../../entities/customerSubscription')
 const cancelCustomerSubscription = require('./cancelCustomerSubscription')
 const assert = require('assert').strict
@@ -14,7 +14,7 @@ const cancelCustomerSubscriptionSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CancelCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async findByID (id) {
@@ -51,7 +51,7 @@ const cancelCustomerSubscriptionSpec = spec({
             request: {
                 id: '1'
             },
-            user: { hasAccess: true },
+            user: User.fromJSON({ id: '123', permissions: ['CancelCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
                     async findByID (id) {
