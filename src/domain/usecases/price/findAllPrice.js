@@ -11,7 +11,8 @@ const findAllPrice = injection =>
         // Input/Request metadata and validation
         request: {
             limit: Number,
-            offset: Number
+            offset: Number,
+            ids: [String],
         },
 
         // Output/Response metadata
@@ -24,7 +25,8 @@ const findAllPrice = injection =>
 
         'Find and return all the Prices': step(async ctx => {
             const repo = new ctx.di.PriceRepository(injection)
-            const prices = await repo.findAll(ctx.req)
+            const { limit, offset, ids } = ctx.req
+            const prices = await repo.find({ limit, offset, where: { id: ids } })
             prices.forEach(price => (price.product = Product.fromJSON({ id: price.productId })))
             return Ok(ctx.ret = prices)
         })

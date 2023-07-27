@@ -19,6 +19,8 @@ async function herbs2rest({ server, config }) {
     // 1. Prepare your use cases metadata if needed
     herbarium.usecases.get('FindUser').metadata({ REST: false })
 
+    herbarium.usecases.get('SaveBillingCycles').metadata({ REST: false })
+
     herbarium.usecases.get('CancelCustomerSubscription').metadata({
         REST: [{
             version: 'v1',

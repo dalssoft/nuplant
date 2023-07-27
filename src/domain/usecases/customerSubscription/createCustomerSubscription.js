@@ -1,11 +1,30 @@
-const { usecase, step, Ok, Err, request } = require('@herbsjs/herbs')
+const { usecase, step, ifElse, Ok, Err, request } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 const CustomerSubscription = require('../../entities/customerSubscription')
 const CustomerSubscriptionRepository = require('../../../infra/data/repositories/customerSubscriptionRepository')
 const Customer = require('../../entities/customer')
 const SubscriptionPlan = require('../../entities/subscriptionPlan')
+const BillingCycle = require('../../entities/billingCycle')
+const SaveBillingCycles = require('../billingCycle/saveBillingCycles')
+const FindSubscriptionPlan = require('../subscriptionPlan/findSubscriptionPlan')
+const FindAllPrice = require('../price/findAllPrice')
 
-const dependency = { CustomerSubscriptionRepository }
+function stepUseCase({ usecase, user, request, response, injection }) {
+    return step(async ctx => {
+        const uc = usecase(ctx)(injection)
+        const hasAccess = await uc.authorize(user(ctx))
+        if (hasAccess === false) {
+            return Err.permissionDenied({
+                message: `User is not authorized to ${uc.description}`,
+            })
+        }
+        const ret = await uc.run(request(ctx))
+        if (ret.isErr) return ret
+        return response(ctx, ret.ok)
+    })
+}
+
+const dependency = { CustomerSubscriptionRepository, SaveBillingCycles, FindSubscriptionPlan, FindAllPrice }
 
 const createCustomerSubscription = injection =>
     usecase('Create Customer Subscription', {
@@ -51,7 +70,6 @@ const createCustomerSubscription = injection =>
 
         'Save the Customer Subscription': step(async ctx => {
             const repo = new ctx.di.CustomerSubscriptionRepository(injection)
-
             const customerSubscription = ctx.customerSubscription
             customerSubscription.customerId = customerSubscription.customer.id
             customerSubscription.subscriptionPlanId = customerSubscription.subscriptionPlan.id
@@ -59,7 +77,71 @@ const createCustomerSubscription = injection =>
             const newCustomerSubscription = await repo.insert(customerSubscription)
             newCustomerSubscription.customer = Customer.fromJSON({ id: customerSubscription.customerId })
             newCustomerSubscription.subscriptionPlan = SubscriptionPlan.fromJSON({ id: customerSubscription.subscriptionPlanId })
-            return (ctx.ret = newCustomerSubscription)
+            ctx.customerSubscription = newCustomerSubscription
+            return Ok()
+        }),
+
+        'Check if it is a Contracted Subscription': ifElse({
+            'If it is a Contracted Subscription': step(ctx => {
+                const customerSubscription = ctx.customerSubscription
+                return Ok(customerSubscription.isContracted())
+            }),
+
+            'Then create all the Billing Cycles': step({
+
+                'Retrieve the Subscription Plan': stepUseCase({
+                    usecase: (ctx) => ctx.di.FindSubscriptionPlan,
+                    user: (ctx) => ctx.user,
+                    request: (ctx) => ({ id: ctx.customerSubscription.subscriptionPlan.id }),
+                    response: (ctx, response) => {
+                        const subscriptionPlan = response
+                        ctx.customerSubscription.subscriptionPlan = subscriptionPlan
+                    },
+                    injection
+                }),
+
+                'Retrieve the Prices': stepUseCase({
+                    usecase: (ctx) => ctx.di.FindAllPrice,
+                    user: (ctx) => ctx.user,
+                    request: (ctx) => ({ ids: ctx.customerSubscription.subscriptionPlan.prices.map(price => price.id) }),
+                    response: (ctx, response) => {
+                        const prices = response
+                        ctx.customerSubscription.subscriptionPlan.prices = prices
+                    },
+                    injection
+                }),
+
+                'Create the Billing Cycles for the Contracted Subscription': step(ctx => {
+                    const billingCycles = []
+                    let billingCycle = BillingCycle.fromJSON({ customerSubscription: ctx.customerSubscription })
+                    billingCycle.initializeAsFirst()
+                    billingCycles.push(billingCycle)
+                    while (billingCycle !== null) {
+                        billingCycle = billingCycle.createNext()
+                        if (billingCycle !== null) billingCycles.push(billingCycle)
+                    }
+                    ctx.billingCycles = billingCycles
+                }),
+
+                'Save all the Billing Cycles': stepUseCase({
+                    usecase: (ctx) => ctx.di.SaveBillingCycles,
+                    user: (ctx) => ctx.user,
+                    request: (ctx) => ({ billingCycles: ctx.billingCycles }),
+                    response: (ctx, response) => {
+                        const billingCycles = response
+                        ctx.billingCycles = billingCycles
+                    },
+                    injection
+                })
+            }),
+            'Else, nothing to do': step(ctx => { })
+        }),
+
+        'Return the new Customer Subscription': step(ctx => {
+            const customerSubscription = ctx.customerSubscription
+            const billingCycles = ctx.billingCycles
+            customerSubscription.billingCycles = billingCycles
+            ctx.ret = customerSubscription
         })
     })
 

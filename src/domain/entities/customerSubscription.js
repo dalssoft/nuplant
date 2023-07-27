@@ -10,13 +10,18 @@ const CustomerSubscription =
         customer: field(Customer, { validation: { presence: true } }),
         subscriptionPlan: field(SubscriptionPlan, { validation: { presence: true } }),
         startDate: field(Date, { validation: { presence: true } }),
-        endDate: field(Date, { validation: { presence: true } }),
+        endDate: field(Date),
         active: field(Boolean, { validation: { presence: true } }),
 
         validateDates () {
+            if (!this.startDate || !this.endDate) return true
             const startDate = validate(this.startDate, { datetime: { before: this.endDate } })
             if (startDate.errors.length) this.errors.startDate = startDate.errors
             return Object.keys(this.errors).length === 0
+        },
+
+        isContracted () {
+            return this.active && !!this.endDate
         }
     })
 

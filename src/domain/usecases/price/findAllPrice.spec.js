@@ -10,19 +10,19 @@ const findAllPriceSpec = spec({
     usecase: findAllPrice,
 
     'Find all prices': scenario({
-        'Given an existing price': given({
-            request: { limit: 0, offset: 0 },
+        'Given an existing prices': given({
+            request: { limit: 0, offset: 0, ids: ['1', '2'] },
             user: User.fromJSON({ id: '123', permissions: ['FindAllPrice'] }),
             injection: {
                 PriceRepository: class PriceRepository {
-                    async findAll ({ limit, offset }) {
-                        const fakePrice = {
-                            id: '1',
-                            price: 99
-                        }
-                        const price = Price.fromJSON(fakePrice)
-                        price.productId = '2'
-                        return ([price])
+                    async find({ limit, offset, where }) {
+                        const ids = where.id
+                        const fakePrices = [
+                            { id: ids[0], price: 10 },
+                            { id: ids[1], price: 20 }
+                        ]
+                        const prices = fakePrices.map(p => Price.fromJSON(p))
+                        return (prices)
                     }
                 }
             }
@@ -36,9 +36,11 @@ const findAllPriceSpec = spec({
 
         'Must return a list of prices': check((ctx) => {
             const prices = ctx.response.ok
-            assert.strictEqual(prices.length, 1)
+            assert.strictEqual(prices.length, 2)
             assert.strictEqual(prices[0].id, '1')
-            assert.strictEqual(prices[0].product.id, '2')
+            assert.strictEqual(prices[0].price, 10)
+            assert.strictEqual(prices[1].id, '2')
+            assert.strictEqual(prices[1].price, 20)
         })
 
     })

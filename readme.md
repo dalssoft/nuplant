@@ -37,6 +37,10 @@ http://localhost:3000/herbsshelf
 
 ## Herbs Demo - Technical Overview
 
+### Intro
+
+This project is a demo of how to use [Herbs](https://herbsjs.org) in a real world application. In order to do that, we are using a domain that is well known by everyone: Recurring Billing System. On some use cases we try to make things a bit more complex to show how to deal with it using Herbs.
+
 ### Using
 
 To start the project for the first time:

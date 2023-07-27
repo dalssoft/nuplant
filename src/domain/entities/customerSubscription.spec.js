@@ -45,12 +45,51 @@ const customerSubscriptionSpec = spec({
         'Must return no errors': check(ctx => {
             assert.deepEqual(ctx.customerSubscription.errors, { startDate: [{ tooLate: new Date('2020-01-01') }] })
         })
-    })
+    }),
+
+    'A Contracted Customer Subscription': scenario({
+        'Given a valid Customer Subscription': given(ctx => (ctx.customerSubscription = CustomerSubscription.fromJSON({
+            id: '1',
+            customer: Customer.fromJSON({ id: '1' }),
+            subscriptionPlan: SubscriptionPlan.fromJSON({ id: '1' }),
+            startDate: new Date('2020-01-01'),
+            endDate: new Date('2020-01-02'),
+            active: true
+        }))),
+
+        'When check if is contracted': when(ctx => {
+            ctx.isContracted = ctx.customerSubscription.isContracted()
+        }),
+
+        'Must return true': check(ctx => {
+            assert.equal(ctx.isContracted, true)
+        })
+
+    }),
+
+    'A Customer Subscription with no determined end date': scenario({
+        'Given a valid Customer Subscription': given(ctx => (ctx.customerSubscription = CustomerSubscription.fromJSON({
+            id: '1',
+            customer: Customer.fromJSON({ id: '1' }),
+            subscriptionPlan: SubscriptionPlan.fromJSON({ id: '1' }),
+            startDate: new Date('2020-01-01'),
+            active: true
+        }))),
+
+        'When check if is not contracted': when(ctx => {
+            ctx.isContracted = ctx.customerSubscription.isContracted()
+        }),
+
+        'Must return true': check(ctx => {
+            assert.equal(ctx.isContracted, false)
+        })
+
+    }),
 
 })
 
 module.exports =
     herbarium.specs
-        .add(customerSubscriptionSpec, 'CustomerSubscription')
+        .add(customerSubscriptionSpec, 'CustomerSubscriptionSpec')
         .metadata({ entity: 'CustomerSubscription' })
         .spec
