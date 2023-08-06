@@ -21,7 +21,7 @@
     "keywords": [
         "herbs"
     ],
-    "author": "davidlojudicesobrinho",
+    "author": "David Lojudice Sobrinho",
     "license": "MIT",
     "dependencies": {
         "@herbsjs/herbarium": "^1.5.0",
@@ -29,7 +29,7 @@
         "@herbsjs/herbs2gql": "^4.0.0-beta.2",
         "@herbsjs/herbs2knex": "2.1.1-beta.3",
         "@herbsjs/herbs2rest": "4.1.0-beta.12",
-        "@herbsjs/herbsshelf": "^5.1.0-beta.6",
+        "@herbsjs/herbsshelf": "^5.1.0-beta.9",
         "apollo-server": "^3.8.2",
         "apollo-server-express": "^3.8.2",
         "cors": "^2.8.5",
