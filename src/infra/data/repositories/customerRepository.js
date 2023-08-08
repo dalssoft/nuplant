@@ -14,7 +14,7 @@ class CustomerRepository extends Repository {
 }
 
 module.exports =
-    herbarium.repositories
-        .add(CustomerRepository, 'CustomerRepository')
-        .metadata({ entity: Customer })
-        .repository
+    herbarium.nodes
+        .add('CustomerRepository', CustomerRepository, herbarium.node.repository)
+        .link('Customer')
+        .value

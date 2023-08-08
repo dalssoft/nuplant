@@ -52,7 +52,7 @@ const updateSubscriptionPlanSpec = spec({
         'Given a repository with a existing Subscription Plan': given((ctx) => ({
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeSubscriptionPlan = {
                             id: ctx.sample.id,
                             name: ctx.sample.name,
@@ -62,9 +62,9 @@ const updateSubscriptionPlanSpec = spec({
                         return ([SubscriptionPlan.fromJSON(fakeSubscriptionPlan)])
                     }
 
-                    async update (subscriptionPlan) { return subscriptionPlan }
-                    async insertPrices (subscriptionPlan) { return subscriptionPlan.prices }
-                    async deletePrices (subscriptionPlan) { }
+                    async update(subscriptionPlan) { return subscriptionPlan }
+                    async insertPrices(subscriptionPlan) { return subscriptionPlan.prices }
+                    async deletePrices(subscriptionPlan) { }
                 }
             }
         })),
@@ -99,7 +99,7 @@ const updateSubscriptionPlanSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['UpdateSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeSubscriptionPlan = {
                             id,
                             name: 'Basic Weekly',
@@ -131,7 +131,7 @@ const updateSubscriptionPlanSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['UpdateSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -146,7 +146,7 @@ const updateSubscriptionPlanSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(updateSubscriptionPlanSpec, 'UpdateSubscriptionPlanSpec')
-        .metadata({ usecase: 'UpdateSubscriptionPlan' })
-        .spec
+    herbarium.nodes
+        .add('UpdateSubscriptionPlanSpec', updateSubscriptionPlanSpec, herbarium.node.spec)
+        .link('UpdateSubscriptionPlan')
+        .value

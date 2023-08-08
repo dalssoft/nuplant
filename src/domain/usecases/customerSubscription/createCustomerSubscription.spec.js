@@ -198,7 +198,7 @@ const createCustomerSubscriptionSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(createCustomerSubscriptionSpec, 'CreateCustomerSubscriptionSpec')
-        .metadata({ usecase: 'CreateCustomerSubscription' })
-        .spec
+    herbarium.nodes
+        .add('CreateCustomerSubscriptionSpec', createCustomerSubscriptionSpec, herbarium.node.spec)
+        .link('CreateCustomerSubscription')
+        .value

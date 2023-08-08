@@ -44,7 +44,7 @@ const cancelCustomerSubscription = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(cancelCustomerSubscription, 'CancelCustomerSubscription')
-        .metadata({ group: 'CustomerSubscription', entity: CustomerSubscription })
-        .usecase
+    herbarium.nodes
+        .add('CancelCustomerSubscription', cancelCustomerSubscription, herbarium.node.usecase)
+        .link('CustomerSubscription')
+        .value

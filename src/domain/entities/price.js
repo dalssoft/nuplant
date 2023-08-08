@@ -10,6 +10,6 @@ const Price =
     })
 
 module.exports =
-    herbarium.entities
-        .add(Price, 'Price')
-        .entity
+    herbarium.nodes
+        .add('Price', Price, herbarium.node.entity)
+        .value

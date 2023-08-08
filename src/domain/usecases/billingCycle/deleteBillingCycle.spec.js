@@ -58,7 +58,7 @@ const deleteBillingCycleSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(deleteBillingCycleSpec, 'DeleteBillingCycleSpec')
-        .metadata({ usecase: 'DeleteBillingCycle' })
-        .spec
+    herbarium.nodes
+        .add('DeleteBillingCycleSpec', deleteBillingCycleSpec, herbarium.node.spec)
+        .link('DeleteBillingCycle')
+        .value

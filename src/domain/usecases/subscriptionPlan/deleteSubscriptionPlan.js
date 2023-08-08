@@ -30,7 +30,8 @@ const deleteSubscriptionPlan = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(deleteSubscriptionPlan, 'DeleteSubscriptionPlan')
-        .metadata({ group: 'SubscriptionPlan', operation: herbarium.crud.delete, entity: SubscriptionPlan })
-        .usecase
+        herbarium.nodes
+            .add('DeleteSubscriptionPlan', deleteSubscriptionPlan, herbarium.node.usecase)
+            .metadata({ operation: herbarium.crud.delete })
+            .link('SubscriptionPlan')
+            .value

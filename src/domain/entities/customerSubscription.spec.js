@@ -89,7 +89,7 @@ const customerSubscriptionSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(customerSubscriptionSpec, 'CustomerSubscriptionSpec')
-        .metadata({ entity: 'CustomerSubscription' })
-        .spec
+    herbarium.nodes
+        .add('CustomerSubscriptionSpec', customerSubscriptionSpec, herbarium.node.spec)
+        .link('CustomerSubscription')
+        .value

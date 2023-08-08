@@ -168,7 +168,7 @@ const updateCustomerSubscriptionSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(updateCustomerSubscriptionSpec, 'UpdateCustomerSubscriptionSpec')
-        .metadata({ usecase: 'UpdateCustomerSubscription' })
-        .spec
+    herbarium.nodes
+        .add('UpdateCustomerSubscriptionSpec', updateCustomerSubscriptionSpec, herbarium.node.spec)
+        .link('UpdateCustomerSubscription')
+        .value

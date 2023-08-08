@@ -41,7 +41,8 @@ const deletePrice = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(deletePrice, 'DeletePrice')
-        .metadata({ group: 'Price', operation: herbarium.crud.delete, entity: Price })
-        .usecase
+        herbarium.nodes
+            .add('DeletePrice', deletePrice, herbarium.node.usecase)    
+            .metadata({ operation: herbarium.crud.delete })
+            .link('Price')
+            .value

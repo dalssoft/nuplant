@@ -29,7 +29,7 @@ const findUser = injection =>
   })
 
 module.exports =
-  herbarium.usecases
-    .add(findUser, 'FindUser')
-    .metadata({ group: 'User', entity: User })
-    .usecase
+  herbarium.nodes
+    .add('FindUser', findUser, herbarium.node.usecase)
+    .link('User')
+    .value

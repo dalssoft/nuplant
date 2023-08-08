@@ -56,7 +56,7 @@ const findAllBillingCycleSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(findAllBillingCycleSpec, 'FindAllBillingCycleSpec')
-        .metadata({ usecase: 'FindAllBillingCycle' })
-        .spec
+    herbarium.nodes
+        .add('FindAllBillingCycleSpec', findAllBillingCycleSpec, herbarium.node.spec)
+        .link('FindAllBillingCycle')
+        .value

@@ -39,7 +39,7 @@ const findCustomerSubscriptionByCustomer = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(findCustomerSubscriptionByCustomer, 'FindCustomerSubscriptionByCustomer')
-        .metadata({ group: 'CustomerSubscription' })
-        .usecase
+    herbarium.nodes
+        .add('FindCustomerSubscriptionByCustomer', findCustomerSubscriptionByCustomer, herbarium.node.usecase)
+        .link('CustomerSubscription')
+        .value

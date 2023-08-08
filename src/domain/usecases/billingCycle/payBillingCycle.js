@@ -74,7 +74,7 @@ const payBillingCycle = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(payBillingCycle, 'PayBillingCycle')
-        .metadata({ group: 'BillingCycle', entity: BillingCycle })
-        .usecase
+    herbarium.nodes
+        .add('PayBillingCycle', payBillingCycle, herbarium.node.usecase)
+        .link('BillingCycle')
+        .value

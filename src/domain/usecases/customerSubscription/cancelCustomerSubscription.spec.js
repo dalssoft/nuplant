@@ -17,7 +17,7 @@ const cancelCustomerSubscriptionSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['CancelCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeCustomerSubscription = {
                             id,
                             customerId: '1',
@@ -29,7 +29,7 @@ const cancelCustomerSubscriptionSpec = spec({
                         return ([CustomerSubscription.fromJSON(fakeCustomerSubscription, { allowExtraKeys: true })])
                     }
 
-                    async update (customerSubscription) { return customerSubscription }
+                    async update(customerSubscription) { return customerSubscription }
                 }
             }
         }),
@@ -54,7 +54,7 @@ const cancelCustomerSubscriptionSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['CancelCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         return []
                     }
                 }
@@ -71,7 +71,7 @@ const cancelCustomerSubscriptionSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(cancelCustomerSubscriptionSpec, 'CancelCustomerSubscriptionSpec')
-        .metadata({ usecase: 'CancelCustomerSubscription' })
-        .spec
+    herbarium.nodes
+        .add('CancelCustomerSubscriptionSpec', cancelCustomerSubscriptionSpec, herbarium.node.spec)
+        .link('CancelCustomerSubscription')
+        .value

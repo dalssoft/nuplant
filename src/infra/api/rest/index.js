@@ -17,11 +17,11 @@ async function herbs2rest({ server, config }) {
     // based on your use cases and entities.
 
     // 1. Prepare your use cases metadata if needed
-    herbarium.usecases.get('FindUser').metadata({ REST: false })
+    herbarium.nodes.get('FindUser').metadata({ REST: false })
 
-    herbarium.usecases.get('SaveBillingCycles').metadata({ REST: false })
+    herbarium.nodes.get('SaveBillingCycles').metadata({ REST: false })
 
-    herbarium.usecases.get('CancelCustomerSubscription').metadata({
+    herbarium.nodes.get('CancelCustomerSubscription').metadata({
         REST: [{
             version: 'v1',
             method: 'PUT',
@@ -30,7 +30,7 @@ async function herbs2rest({ server, config }) {
         }]
     })
 
-    herbarium.usecases.get('FindCustomerSubscriptionByCustomer').metadata({
+    herbarium.nodes.get('FindCustomerSubscriptionByCustomer').metadata({
         REST: [{
             version: 'v1',
             method: 'GET',
@@ -39,7 +39,7 @@ async function herbs2rest({ server, config }) {
         }]
     })
 
-    herbarium.usecases.get('PayBillingCycle').metadata({
+    herbarium.nodes.get('PayBillingCycle').metadata({
         REST: [{
             version: 'v1',
             method: 'POST',

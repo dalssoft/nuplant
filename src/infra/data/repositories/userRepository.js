@@ -4,7 +4,7 @@ const User = require('../../../domain/entities/user')
 const connection = require('../database/connection')
 
 class UserRepository extends Repository {
-    constructor (injection) {
+    constructor(injection) {
         super({
             entity: User,
             table: 'users',
@@ -14,7 +14,7 @@ class UserRepository extends Repository {
 }
 
 module.exports =
-    herbarium.repositories
-        .add(UserRepository, 'UserRepository')
-        .metadata({ entity: User })
-        .repository
+    herbarium.nodes
+        .add('UserRepository', UserRepository, herbarium.node.repository)
+        .link('User')
+        .value

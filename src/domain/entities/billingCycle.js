@@ -64,6 +64,6 @@ const BillingCycle =
     })
 
 module.exports =
-    herbarium.entities
-        .add(BillingCycle, 'BillingCycle')
-        .entity
+    herbarium.nodes
+        .add('BillingCycle', BillingCycle, herbarium.node.entity)
+        .value

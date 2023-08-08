@@ -15,7 +15,7 @@ const findAllSubscriptionPlanSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['FindAllSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async findAll ({ limit, offset }) {
+                    async findAll({ limit, offset }) {
                         const fakeSubscriptionPlan = {
                             id: '1',
                             name: 'Basic',
@@ -25,7 +25,7 @@ const findAllSubscriptionPlanSpec = spec({
                         return ([SubscriptionPlan.fromJSON(fakeSubscriptionPlan)])
                     }
 
-                    fetchPrices (subscriptionPlans) {
+                    fetchPrices(subscriptionPlans) {
                         const fakePrice = { id: '1', value: 1000 }
                         subscriptionPlans[0].prices = [fakePrice]
                     }
@@ -54,7 +54,7 @@ const findAllSubscriptionPlanSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(findAllSubscriptionPlanSpec, 'FindAllSubscriptionPlanSpec')
-        .metadata({ usecase: 'FindAllSubscriptionPlan' })
-        .spec
+    herbarium.nodes
+        .add('FindAllSubscriptionPlanSpec', findAllSubscriptionPlanSpec, herbarium.node.spec)
+        .link('FindAllSubscriptionPlan')
+        .value        

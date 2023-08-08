@@ -46,8 +46,8 @@ const createSubscriptionPlanSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['CreateSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async insert (subscriptionPlan) { subscriptionPlan.id = '1'; return subscriptionPlan }
-                    async insertPrices (subscriptionPlan) { return subscriptionPlan.prices }
+                    async insert(subscriptionPlan) { subscriptionPlan.id = '1'; return subscriptionPlan }
+                    async insertPrices(subscriptionPlan) { return subscriptionPlan.prices }
                 }
             }
         })),
@@ -93,7 +93,7 @@ const createSubscriptionPlanSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(createSubscriptionPlanSpec, 'CreateSubscriptionPlanSpec')
-        .metadata({ usecase: 'CreateSubscriptionPlan' })
-        .spec
+    herbarium.nodes
+        .add('CreateSubscriptionPlanSpec', createSubscriptionPlanSpec, herbarium.node.spec)
+        .link('CreateSubscriptionPlan')
+        .value

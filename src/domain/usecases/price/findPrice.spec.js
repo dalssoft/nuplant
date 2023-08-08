@@ -67,7 +67,7 @@ const findPriceSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(findPriceSpec, 'FindPriceSpec')
-        .metadata({ usecase: 'FindPrice' })
-        .spec
+    herbarium.nodes
+        .add('FindPriceSpec', findPriceSpec, herbarium.node.spec)
+        .link('FindPrice')
+        .value

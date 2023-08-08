@@ -108,7 +108,7 @@ const updateProductSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(updateProductSpec, 'UpdateProductSpec')
-        .metadata({ usecase: 'UpdateProduct' })
-        .spec
+    herbarium.nodes
+        .add('UpdateProductSpec', updateProductSpec, herbarium.node.spec)
+        .link('UpdateProduct')
+        .value

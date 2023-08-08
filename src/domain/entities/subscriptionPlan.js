@@ -18,6 +18,6 @@ const SubscriptionPlan =
     })
 
 module.exports =
-    herbarium.entities
-        .add(SubscriptionPlan, 'SubscriptionPlan')
-        .entity
+    herbarium.nodes
+        .add('SubscriptionPlan', SubscriptionPlan, herbarium.node.entity)
+        .value

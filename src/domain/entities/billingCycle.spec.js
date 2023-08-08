@@ -228,7 +228,7 @@ const billingCycleSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(billingCycleSpec, 'BillingCycleSpec')
-        .metadata({ entity: 'BillingCycle' })
-        .spec
+    herbarium.nodes
+        .add('BillingCycleSpec', billingCycleSpec, herbarium.node.spec)
+        .link('BillingCycle')
+        .value

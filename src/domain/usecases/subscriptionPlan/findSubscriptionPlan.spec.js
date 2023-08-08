@@ -77,7 +77,7 @@ const findSubscriptionPlanSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(findSubscriptionPlanSpec, 'FindSubscriptionPlanSpec')
-      .metadata({ usecase: 'FindSubscriptionPlan' })
-      .spec
+    herbarium.nodes
+        .add('FindSubscriptionPlanSpec', findSubscriptionPlanSpec, herbarium.node.spec)
+        .link('FindSubscriptionPlan')
+        .value

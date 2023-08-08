@@ -11,6 +11,6 @@ const User =
     })
 
 module.exports =
-    herbarium.entities
-        .add(User, 'User')
-        .entity
+    herbarium.nodes
+        .add('User', User, herbarium.node.entity)
+        .value

@@ -15,7 +15,7 @@ class BillingCycleRepository extends Repository {
 }
 
 module.exports =
-    herbarium.repositories
-        .add(BillingCycleRepository, 'BillingCycleRepository')
-        .metadata({ entity: BillingCycle })
-        .repository
+    herbarium.nodes
+        .add('BillingCycleRepository', BillingCycleRepository, herbarium.node.repository)
+        .link('BillingCycle')
+        .value

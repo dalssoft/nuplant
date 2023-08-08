@@ -26,6 +26,6 @@ const CustomerSubscription =
     })
 
 module.exports =
-    herbarium.entities
-        .add(CustomerSubscription, 'CustomerSubscription')
-        .entity
+    herbarium.nodes
+        .add('CustomerSubscription', CustomerSubscription, herbarium.node.entity)
+        .value

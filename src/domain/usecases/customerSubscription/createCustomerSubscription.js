@@ -132,7 +132,8 @@ const createCustomerSubscription = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(createCustomerSubscription, 'CreateCustomerSubscription')
-        .metadata({ group: 'CustomerSubscription', operation: herbarium.crud.create, entity: CustomerSubscription })
-        .usecase
+    herbarium.nodes
+        .add('CreateCustomerSubscription', createCustomerSubscription, herbarium.node.usecase)
+        .link('CustomerSubscription')
+        .metadata({ operation: herbarium.crud.create })
+        .value

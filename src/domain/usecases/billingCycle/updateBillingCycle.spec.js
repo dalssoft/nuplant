@@ -32,7 +32,7 @@ const updateBillingCycleSpec = spec({
         'Given a repository with a existing Billing Cycle': given((ctx) => ({
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeBillingCycle = {
                             id,
                             startDate: new Date('2020-01-01'),
@@ -46,7 +46,7 @@ const updateBillingCycleSpec = spec({
                         return ([BillingCycle.fromJSON(fakeBillingCycle, { allowExtraKeys: true })])
                     }
 
-                    async update (billingCycle) { return billingCycle }
+                    async update(billingCycle) { return billingCycle }
                 }
             }
         })),
@@ -75,7 +75,7 @@ const updateBillingCycleSpec = spec({
         'Given a invalid billing Cycle': given({
             request: {
                 id: '1',
-                customerSubscription: CustomerSubscription.fromJSON({ }),
+                customerSubscription: CustomerSubscription.fromJSON({}),
                 startDate: new Date('2020-01-01'),
                 endDate: new Date('2020-01-02'),
                 amountDue: 100,
@@ -86,7 +86,7 @@ const updateBillingCycleSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['UpdateBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeBillingCycle = {
                             id,
                             startDate: new Date('2020-01-01'),
@@ -127,7 +127,7 @@ const updateBillingCycleSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['UpdateBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -142,7 +142,7 @@ const updateBillingCycleSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(updateBillingCycleSpec, 'UpdateBillingCycleSpec')
-        .metadata({ usecase: 'UpdateBillingCycle' })
-        .spec
+    herbarium.nodes
+        .add('UpdateBillingCycleSpec', updateBillingCycleSpec, herbarium.node.spec)
+        .link('UpdateBillingCycle')
+        .value

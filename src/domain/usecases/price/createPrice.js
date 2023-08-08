@@ -43,7 +43,8 @@ const createPrice = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(createPrice, 'CreatePrice')
-        .metadata({ group: 'Price', operation: herbarium.crud.create, entity: Price })
-        .usecase
+    herbarium.nodes
+        .add('CreatePrice', createPrice, herbarium.node.usecase)
+        .metadata({ operation: herbarium.crud.create })
+        .link('Price')
+        .value

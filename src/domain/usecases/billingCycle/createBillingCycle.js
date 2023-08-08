@@ -44,7 +44,8 @@ const createBillingCycle = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(createBillingCycle, 'CreateBillingCycle')
-        .metadata({ group: 'BillingCycle', operation: herbarium.crud.create, entity: BillingCycle })
-        .usecase
+    herbarium.nodes
+        .add('Create Billing Cycle', createBillingCycle, herbarium.node.usecase)
+        .link('BillingCycle')
+        .metadata({  operation: herbarium.crud.create })
+        .value

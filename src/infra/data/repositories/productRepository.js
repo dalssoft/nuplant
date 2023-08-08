@@ -4,7 +4,7 @@ const Product = require('../../../domain/entities/product')
 const connection = require('../database/connection')
 
 class ProductRepository extends Repository {
-    constructor (injection) {
+    constructor(injection) {
         super({
             entity: Product,
             table: 'products',
@@ -14,7 +14,7 @@ class ProductRepository extends Repository {
 }
 
 module.exports =
-    herbarium.repositories
-        .add(ProductRepository, 'ProductRepository')
-        .metadata({ entity: Product })
-        .repository
+    herbarium.nodes
+        .add('ProductRepository', ProductRepository, herbarium.node.repository)
+        .link('Product')
+        .value

@@ -131,7 +131,7 @@ const payBillingCycleSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(payBillingCycleSpec, 'PayBillingCycleSpec')
-        .metadata({ usecase: 'PayBillingCycle' })
-        .spec
+    herbarium.nodes
+        .add('PayBillingCycleSpec', payBillingCycleSpec, herbarium.node.spec)
+        .link('PayBillingCycle')
+        .value

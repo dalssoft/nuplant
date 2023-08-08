@@ -17,8 +17,8 @@ const deletePriceSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['DeletePrice'] }),
             injection: {
                 PriceRepository: class PriceRepository {
-                    async delete (entity) { return true }
-                    async findByID (id) { return [Price.fromJSON({ id })] }
+                    async delete(entity) { return true }
+                    async findByID(id) { return [Price.fromJSON({ id })] }
                 }
             }
         }),
@@ -43,7 +43,7 @@ const deletePriceSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['DeletePrice'] }),
             injection: {
                 PriceRepository: class PriceRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -58,7 +58,7 @@ const deletePriceSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(deletePriceSpec, 'DeletePriceSpec')
-      .metadata({ usecase: 'DeletePrice' })
-      .spec
+    herbarium.nodes
+        .add('DeletePriceSpec', deletePriceSpec, herbarium.node.spec)
+        .link('DeletePrice')
+        .value

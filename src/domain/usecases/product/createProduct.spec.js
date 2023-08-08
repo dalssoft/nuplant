@@ -60,9 +60,8 @@ const createProductSpec = spec({
 
     })
 })
-
 module.exports =
-    herbarium.specs
-        .add(createProductSpec, 'CreateProductSpec')
-        .metadata({ usecase: 'CreateProduct' })
-        .spec
+    herbarium.nodes
+        .add('CreateProductSpec', createProductSpec, herbarium.node.spec)
+        .link('CreateProduct')
+        .value

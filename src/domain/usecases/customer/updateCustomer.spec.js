@@ -27,7 +27,7 @@ const updateCustomerSpec = spec({
         'Given a repository with a existing customer': given((ctx) => ({
             injection: {
                 CustomerRepository: class CustomerRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeCustomer = {
                             id,
                             name: 'Samantha',
@@ -37,7 +37,7 @@ const updateCustomerSpec = spec({
                         return ([Customer.fromJSON(fakeCustomer)])
                     }
 
-                    async update (id) { return true }
+                    async update(id) { return true }
                 }
             }
         })),
@@ -86,7 +86,7 @@ const updateCustomerSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['UpdateCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -101,7 +101,7 @@ const updateCustomerSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(updateCustomerSpec, 'UpdateCustomerSpec')
-        .metadata({ usecase: 'UpdateCustomer' })
-        .spec
+    herbarium.nodes
+        .add('UpdateCustomerSpec', updateCustomerSpec, herbarium.node.spec)
+        .link('UpdateCustomer')
+        .value

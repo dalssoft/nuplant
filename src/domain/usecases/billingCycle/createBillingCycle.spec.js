@@ -77,7 +77,7 @@ const createBillingCycleSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(createBillingCycleSpec, 'CreateBillingCycleSpec')
-        .metadata({ usecase: 'CreateBillingCycle' })
-        .spec
+    herbarium.nodes
+        .add('CreateBillingCycleSpec', createBillingCycleSpec, herbarium.node.spec)
+        .link('CreateBillingCycle')
+        .value

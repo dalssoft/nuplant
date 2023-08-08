@@ -17,7 +17,7 @@ const findCustomerSubscriptionSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['FindCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeCustomerSubscription = {
                             id,
                             customerId: '1',
@@ -58,7 +58,7 @@ const findCustomerSubscriptionSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['FindCustomerSubscription'] }),
             injection: {
                 CustomerSubscriptionRepository: class CustomerSubscriptionRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -73,7 +73,7 @@ const findCustomerSubscriptionSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(findCustomerSubscriptionSpec, 'FindCustomerSubscriptionSpec')
-        .metadata({ usecase: 'FindCustomerSubscription' })
-        .spec
+    herbarium.nodes
+        .add('FindCustomerSubscriptionSpec', findCustomerSubscriptionSpec, herbarium.node.spec)
+        .link('FindCustomerSubscription')
+        .value

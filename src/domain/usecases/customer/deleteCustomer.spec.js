@@ -17,8 +17,8 @@ const deleteCustomerSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['DeleteCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
-                    async delete (entity) { return true }
-                    async findByID (id) { return [Customer.fromJSON({ id })] }
+                    async delete(entity) { return true }
+                    async findByID(id) { return [Customer.fromJSON({ id })] }
                 }
             }
         }),
@@ -43,7 +43,7 @@ const deleteCustomerSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['DeleteCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -58,7 +58,7 @@ const deleteCustomerSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(deleteCustomerSpec, 'DeleteCustomerSpec')
-      .metadata({ usecase: 'DeleteCustomer' })
-      .spec
+    herbarium.nodes
+        .add('DeleteCustomerSpec', deleteCustomerSpec, herbarium.node.spec)
+        .link('DeleteCustomer')
+        .value

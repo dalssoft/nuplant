@@ -29,9 +29,11 @@ const findAllSubscriptionPlan = injection =>
             return Ok(ctx.ret = subscriptionPlans)
         })
     })
-
+    
 module.exports =
-    herbarium.usecases
-        .add(findAllSubscriptionPlan, 'FindAllSubscriptionPlan')
-        .metadata({ group: 'SubscriptionPlan', operation: herbarium.crud.readAll, entity: SubscriptionPlan })
-        .usecase
+        herbarium.nodes
+            .add('FindAllSubscriptionPlan', findAllSubscriptionPlan, herbarium.node.usecase)
+            .metadata({ operation: herbarium.crud.readAll })
+            .link('SubscriptionPlan')
+            .value
+            

@@ -33,7 +33,8 @@ const findAllCustomerSubscription = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(findAllCustomerSubscription, 'FindAllCustomerSubscription')
-        .metadata({ group: 'CustomerSubscription', operation: herbarium.crud.readAll, entity: CustomerSubscription })
-        .usecase
+    herbarium.nodes
+        .add('FindAllCustomerSubscription', findAllCustomerSubscription, herbarium.node.usecase)
+        .link('CustomerSubscription')
+        .metadata({ operation: herbarium.crud.readAll })
+        .value

@@ -75,7 +75,7 @@ const findCustomerSubscriptionByCustomerSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(findCustomerSubscriptionByCustomerSpec, 'FindCustomerSubscriptionByCustomerSpec')
-        .metadata({ usecase: 'FindCustomerSubscriptionByCustomer' })
-        .spec
+    herbarium.nodes
+        .add('FindCustomerSubscriptionByCustomerSpec', findCustomerSubscriptionByCustomerSpec, herbarium.node.spec)
+        .link('FindCustomerSubscriptionByCustomer')
+        .value

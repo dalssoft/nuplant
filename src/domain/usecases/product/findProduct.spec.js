@@ -17,7 +17,7 @@ const findProductSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['FindProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeProduct = {
                             id,
                             name: 'A product',
@@ -53,7 +53,7 @@ const findProductSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['FindProduct'] }),
             injection: {
                 ProductRepository: class ProductRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -68,7 +68,7 @@ const findProductSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(findProductSpec, 'FindProductSpec')
-        .metadata({ usecase: 'FindProduct' })
-        .spec
+    herbarium.nodes
+        .add('FindProductSpec', findProductSpec, herbarium.node.spec)
+        .link('FindProduct')
+        .value

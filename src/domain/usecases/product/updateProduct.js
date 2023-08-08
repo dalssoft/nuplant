@@ -57,7 +57,8 @@ const updateProduct = injection =>
     })
 
 module.exports =
-    herbarium.usecases
-        .add(updateProduct, 'UpdateProduct')
-        .metadata({ group: 'Product', operation: herbarium.crud.update, entity: Product })
-        .usecase
+        herbarium.nodes
+            .add('UpdateProduct', updateProduct, herbarium.node.usecase)
+            .metadata({ operation: herbarium.crud.update })
+            .link('Product')
+            .value

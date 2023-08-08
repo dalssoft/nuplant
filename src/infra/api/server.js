@@ -16,6 +16,11 @@ async function start (config) {
     await rest(app, config)
     await graphql(app, config)
     await shelf(app, config)
+    
+    // save on disk herbarium graph
+    // const graph = herbarium.nodes.toJSON()
+    // const fs = require('fs')
+    // fs.writeFileSync('./herbarium.json', JSON.stringify(graph))
 
     return app.listen(
         { port: config.api.port },

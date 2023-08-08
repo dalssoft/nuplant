@@ -17,7 +17,7 @@ const findBillingCycleSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['FindBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
-                    async findByID (id) {
+                    async findByID(id) {
                         const fakeBillingCycle = {
                             id,
                             startDate: new Date('2020-01-01'),
@@ -62,7 +62,7 @@ const findBillingCycleSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['FindBillingCycle'] }),
             injection: {
                 BillingCycleRepository: class BillingCycleRepository {
-                    async findByID (id) { return [] }
+                    async findByID(id) { return [] }
                 }
             }
         }),
@@ -77,7 +77,7 @@ const findBillingCycleSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(findBillingCycleSpec, 'FindBillingCycleSpec')
-        .metadata({ usecase: 'FindBillingCycle' })
-        .spec
+    herbarium.nodes
+        .add('FindBillingCycleSpec', findBillingCycleSpec, herbarium.node.spec)
+        .link('FindBillingCycle')
+        .value

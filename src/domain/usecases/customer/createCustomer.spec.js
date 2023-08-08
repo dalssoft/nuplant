@@ -18,7 +18,7 @@ const createCustomerSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['CreateCustomer'] }),
             injection: {
                 CustomerRepository: class CustomerRepository {
-                    async insert (customer) { customer.id = '1'; return (customer) }
+                    async insert(customer) { customer.id = '1'; return (customer) }
                 }
             }
         }),
@@ -49,7 +49,7 @@ const createCustomerSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['CreateCustomer'] }),
             injection: {
                 customerRepository: new (class CustomerRepository {
-                    async insert (customer) { return (customer) }
+                    async insert(customer) { return (customer) }
                 })()
             }
         }),
@@ -64,7 +64,7 @@ const createCustomerSpec = spec({
 })
 
 module.exports =
-    herbarium.specs
-        .add(createCustomerSpec, 'CreateCustomerSpec')
-        .metadata({ usecase: 'CreateCustomer' })
-        .spec
+    herbarium.nodes
+        .add('CreateCustomerSpec', createCustomerSpec, herbarium.node.spec)
+        .link('CreateCustomer')
+        .value

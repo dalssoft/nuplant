@@ -16,8 +16,8 @@ const deleteSubscriptionPlanSpec = spec({
             user: User.fromJSON({ id: '123', permissions: ['DeleteSubscriptionPlan'] }),
             injection: {
                 SubscriptionPlanRepository: class SubscriptionPlanRepository {
-                    async delete (entity) { return true }
-                    async deletePrices (entity) { return true }
+                    async delete(entity) { return true }
+                    async deletePrices(entity) { return true }
                 }
             }
         }),
@@ -36,7 +36,7 @@ const deleteSubscriptionPlanSpec = spec({
 })
 
 module.exports =
-  herbarium.specs
-      .add(deleteSubscriptionPlanSpec, 'DeleteSubscriptionPlanSpec')
-      .metadata({ usecase: 'DeleteSubscriptionPlan' })
-      .spec
+    herbarium.nodes
+        .add('DeleteSubscriptionPlanSpec', deleteSubscriptionPlanSpec, herbarium.node.spec)
+        .link('DeleteSubscriptionPlan')
+        .value
