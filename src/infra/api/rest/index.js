@@ -1,5 +1,5 @@
 const express = require('express')
-const { populateMetadata, generateEndpoints } = require('@herbsjs/herbs2rest')
+const { endpoints, routes } = require('@herbsjs/herbs2rest')
 const { herbarium } = require('@herbsjs/herbarium')
 const controller = require('./controller')
 
@@ -13,51 +13,52 @@ async function rest(app, config) {
 }
 
 async function herbs2rest({ server, config }) {
-    // Herbs2REST will populate the Express endpoints
+    // Herbs2REST will create Express endpoints
     // based on your use cases and entities.
 
-    // 1. Prepare your use cases metadata if needed
-    herbarium.nodes.get('FindUser').metadata({ REST: false })
+    // 1. Create endpoints based on the use cases
+    endpoints({ herbarium, controller }, {
+        'v1': (endpoints) => {
+            endpoints.ignore('FindUser')
 
-    herbarium.nodes.get('SaveBillingCycles').metadata({ REST: false })
+            endpoints.ignore('SaveBillingCycles')
 
-    herbarium.nodes.get('CancelCustomerSubscription').metadata({
-        REST: [{
-            version: 'v1',
-            method: 'PUT',
-            path: '/v1/customerSubscriptions/:id/cancel',
-            parameters: { params: { id: String } },
-        }]
+            endpoints.for('CancelCustomerSubscription').use({
+                method: 'PUT',
+                path: '/v1/customerSubscriptions/:id/cancel',
+                parameters: { params: { id: String } },
+            })
+
+            endpoints.for('FindCustomerSubscriptionByCustomer').use({
+                method: 'GET',
+                path: '/v1/customers/:id/subscription',
+                parameters: { params: { id: String } },
+            })
+
+            endpoints.for('PayBillingCycle').use({
+                method: 'POST',
+                path: '/v1/billingCycles/:id/pay',
+                parameters: {
+                    params: { id: String },
+                    body: { paymentProcessorTransactionID: String }
+                },
+            })
+
+            endpoints.build()
+        },
+        'v2': (endpoints) => {
+            endpoints.ignore('FindUser')
+            endpoints.ignore('SaveBillingCycles')
+            endpoints.ignore('CancelCustomerSubscription')
+            endpoints.ignore('FindCustomerSubscriptionByCustomer')
+            endpoints.ignore('PayBillingCycle')
+            endpoints.build()
+        }
     })
 
-    herbarium.nodes.get('FindCustomerSubscriptionByCustomer').metadata({
-        REST: [{
-            version: 'v1',
-            method: 'GET',
-            path: '/v1/customers/:id/subscription',
-            parameters: { params: { id: String } },
-        }]
-    })
+    // 2. Generate the endpoints
+    routes({ herbarium, server }).attach()
 
-    herbarium.nodes.get('PayBillingCycle').metadata({
-        REST: [{
-            version: 'v1',
-            method: 'POST',
-            path: '/v1/billingCycles/:id/pay',
-            parameters: {
-                params: { id: String },
-                body: { paymentProcessorTransactionID: String }
-            },
-        }]
-    })
-
-    // 2. Populate the metadata
-    // Each use case will be populated with the metadata:
-    // version, resource, method, path, parameters, parametersHandler, controller
-    populateMetadata({ herbarium, controller, version: 'v1' })
-
-    // 3. Generate the endpoints based on the metadata
-    generateEndpoints({ herbarium, server })
 }
 
 module.exports = { rest }
